@@ -1,3 +1,5 @@
+@import url('https://unpkg.com/leaflet@1.5.1/dist/leaflet.css');
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -11,3 +13,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+img.huechange-140 { filter: hue-rotate(140deg); }
+img.huechange-280 { filter: hue-rotate(280deg); }
+img.huechange-190 { filter: hue-rotate(190deg); }
