@@ -95,7 +95,7 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets }:
                                 </Card.Title>
                                 {data.brand ? (<Card.Text>{'Brand: ' + data.brand}</Card.Text>) : null}
                                 {data["addr:street"] !== undefined ? (<Card.Text>{address} </Card.Text>) : null}
-                                <Button variant="outline-primary" onClick={_ => updateMarkets([market])}>Find products at this market</Button>
+                                <Button variant="outline-primary" onClick={_ => updateMarkets([market])}>Find products at this shop</Button>
                             </Card.Body>
                         </Card>
                     </Popup>
@@ -123,7 +123,7 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets }:
             {homePosition ?
                 <Marker position={homePosition} icon={goldMarker}>
                     <Popup>
-                        <Button variant="outline-primary" onClick={queryMarkets}>Find markets around here</Button>
+                        <Button variant="outline-primary" onClick={queryMarkets}>Find shops around here</Button>
                     </Popup>
                 </Marker> : null
             }
