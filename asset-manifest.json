@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/food-logger/static/css/main.6626e535.chunk.css",
+    "main.js": "/food-logger/static/js/main.fe4c09be.chunk.js",
+    "main.js.map": "/food-logger/static/js/main.fe4c09be.chunk.js.map",
+    "runtime-main.js": "/food-logger/static/js/runtime-main.a6f7e973.js",
+    "runtime-main.js.map": "/food-logger/static/js/runtime-main.a6f7e973.js.map",
+    "static/css/2.20aa2d7b.chunk.css": "/food-logger/static/css/2.20aa2d7b.chunk.css",
+    "static/js/2.d22d9cb5.chunk.js": "/food-logger/static/js/2.d22d9cb5.chunk.js",
+    "static/js/2.d22d9cb5.chunk.js.map": "/food-logger/static/js/2.d22d9cb5.chunk.js.map",
+    "static/js/3.cb88b26b.chunk.js": "/food-logger/static/js/3.cb88b26b.chunk.js",
+    "static/js/3.cb88b26b.chunk.js.map": "/food-logger/static/js/3.cb88b26b.chunk.js.map",
+    "index.html": "/food-logger/index.html",
+    "static/css/2.20aa2d7b.chunk.css.map": "/food-logger/static/css/2.20aa2d7b.chunk.css.map",
+    "static/css/main.6626e535.chunk.css.map": "/food-logger/static/css/main.6626e535.chunk.css.map",
+    "static/js/2.d22d9cb5.chunk.js.LICENSE.txt": "/food-logger/static/js/2.d22d9cb5.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a6f7e973.js",
+    "static/css/2.20aa2d7b.chunk.css",
+    "static/js/2.d22d9cb5.chunk.js",
+    "static/css/main.6626e535.chunk.css",
+    "static/js/main.fe4c09be.chunk.js"
+  ]
+}
