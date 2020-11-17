@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/food-logger/static/css/main.b2de5b90.chunk.css",
-    "main.js": "/food-logger/static/js/main.dc7b68ad.chunk.js",
-    "main.js.map": "/food-logger/static/js/main.dc7b68ad.chunk.js.map",
-    "runtime-main.js": "/food-logger/static/js/runtime-main.26a92f35.js",
-    "runtime-main.js.map": "/food-logger/static/js/runtime-main.26a92f35.js.map",
+    "main.css": "/food-logger/static/css/main.595102ee.chunk.css",
+    "main.js": "/food-logger/static/js/main.583c6e84.chunk.js",
+    "main.js.map": "/food-logger/static/js/main.583c6e84.chunk.js.map",
+    "runtime-main.js": "/food-logger/static/js/runtime-main.40510884.js",
+    "runtime-main.js.map": "/food-logger/static/js/runtime-main.40510884.js.map",
     "static/css/2.20aa2d7b.chunk.css": "/food-logger/static/css/2.20aa2d7b.chunk.css",
-    "static/js/2.6bcf3686.chunk.js": "/food-logger/static/js/2.6bcf3686.chunk.js",
-    "static/js/2.6bcf3686.chunk.js.map": "/food-logger/static/js/2.6bcf3686.chunk.js.map",
-    "static/js/3.1b56d511.chunk.js": "/food-logger/static/js/3.1b56d511.chunk.js",
-    "static/js/3.1b56d511.chunk.js.map": "/food-logger/static/js/3.1b56d511.chunk.js.map",
+    "static/js/2.38c398ff.chunk.js": "/food-logger/static/js/2.38c398ff.chunk.js",
+    "static/js/2.38c398ff.chunk.js.map": "/food-logger/static/js/2.38c398ff.chunk.js.map",
+    "static/js/3.a75ec023.chunk.js": "/food-logger/static/js/3.a75ec023.chunk.js",
+    "static/js/3.a75ec023.chunk.js.map": "/food-logger/static/js/3.a75ec023.chunk.js.map",
     "index.html": "/food-logger/index.html",
     "static/css/2.20aa2d7b.chunk.css.map": "/food-logger/static/css/2.20aa2d7b.chunk.css.map",
-    "static/css/main.b2de5b90.chunk.css.map": "/food-logger/static/css/main.b2de5b90.chunk.css.map",
-    "static/js/2.6bcf3686.chunk.js.LICENSE.txt": "/food-logger/static/js/2.6bcf3686.chunk.js.LICENSE.txt"
+    "static/css/main.595102ee.chunk.css.map": "/food-logger/static/css/main.595102ee.chunk.css.map",
+    "static/js/2.38c398ff.chunk.js.LICENSE.txt": "/food-logger/static/js/2.38c398ff.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.26a92f35.js",
+    "static/js/runtime-main.40510884.js",
     "static/css/2.20aa2d7b.chunk.css",
-    "static/js/2.6bcf3686.chunk.js",
-    "static/css/main.b2de5b90.chunk.css",
-    "static/js/main.dc7b68ad.chunk.js"
+    "static/js/2.38c398ff.chunk.js",
+    "static/css/main.595102ee.chunk.css",
+    "static/js/main.583c6e84.chunk.js"
   ]
 }
