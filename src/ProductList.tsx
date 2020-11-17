@@ -3,6 +3,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import './ProductView.css';
 
 export type product = { name: string, description: string, image?: string }
 
@@ -37,12 +38,20 @@ export const exampleCategories: category[] = [
         name: 'Cheeses',
         products: [
             0,
+            1,
+            0,
+            1,
+            0,
             1
         ]
     },
     {
         name: 'Wines',
         products: [
+            3,
+            4,
+            3,
+            4,
             3,
             4
         ]
@@ -62,7 +71,9 @@ function ProductCard({ product, onClick, selected }: ProductCardProps) {
             bg={selected ? 'primary' : undefined}
             text={selected ? 'light' : undefined}
         >
-            {product.image ? (<Card.Img variant="top" src={product.image} />) : ''}
+            {product.image ?
+                (<Card.Img variant="top" src={product.image} className="product-img" />)
+                : (<div className="product-img" />)}
             <Card.Body>
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Text>
@@ -88,13 +99,12 @@ function ProductList({ categories, products, onSelectProduct, selectedProduct }:
         return ids.map((id) => {
             if (products[id] === undefined) return null
             return (
-                <Col xs={12} md={6} lg={4} key={id}>
-                    <ProductCard
-                        product={products[id]}
-                        onClick={() => { onSelectProduct(id) }}
-                        selected={selectedProduct === id}
-                    />
-                </Col>
+                <ProductCard
+                    product={products[id]}
+                    onClick={() => { onSelectProduct(id) }}
+                    selected={selectedProduct === id}
+                    key={id}
+                />
             )
         })
     }
@@ -107,9 +117,9 @@ function ProductList({ categories, products, onSelectProduct, selectedProduct }:
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey={index.toString()}>
                     <Card.Body>
-                        <Row>
+                        <div className="card-columns">
                             {productList(category.products)}
-                        </Row>
+                        </div>
                     </Card.Body>
                 </Accordion.Collapse>
             </Card>

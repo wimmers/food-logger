@@ -1,0 +1,9 @@
+.product-card {
+    width: 15em!important;
+    float: left
+}
+
+.product-img {
+    height: 10em;
+    object-fit: contain;
+}
