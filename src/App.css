@@ -39,5 +39,44 @@
 
 .leaflet-container {
   width: 100%;
-  height: 100vh;
+  height: 100%;
+}
+
+.full-size {
+  height: 100%;
+  width: 100%;
+}
+
+.split,
+.gutter.gutter-horizontal,
+.gutter.gutter-vertical {
+  float: left;
+}
+
+.gutter.gutter-horizontal {
+  cursor: ew-resize;
+  height: 100%;
+  background: 
+    url('https://api.iconify.design/ic-round-drag-handle.svg?color=rgb(140%2C140%2C140)&height=2em&rotate=90deg') no-repeat center center,
+    linear-gradient(to right, rgb(245,245,245), rgb(255,255,255));
+}
+
+.gutter:hover.gutter-horizontal {
+  background: 
+    url('https://api.iconify.design/ic-round-drag-handle.svg?color=rgb(140%2C140%2C140)&height=2em&rotate=90deg') no-repeat center center,
+    linear-gradient(to right, rgb(235,235,235), rgb(245,245,245));
+}
+
+.gutter.gutter-vertical {
+  cursor: eh-resize;
+  width: 100%;
+  background:
+    url('https://api.iconify.design/ic-round-drag-handle.svg?color=rgb(140%2C140%2C140)&height=2em') no-repeat center center,
+    linear-gradient(to bottom, rgb(245,245,245), rgb(255,255,255));
+}
+
+.gutter.gutter-vertical:hover {
+  background: 
+    url('https://api.iconify.design/ic-round-drag-handle.svg?color=rgb(140%2C140%2C140)&height=2em') no-repeat center center,
+    linear-gradient(to right, rgb(235,235,235), rgb(245,245,245));
 }

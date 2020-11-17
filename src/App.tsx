@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import MapView from './MapView';
 import ProductList, { ProductDict, exampleProducts, exampleCategories } from './ProductList'
 import { OSMSupermarket } from './OSMData';
+import Split from 'react-split'
+import { Map } from 'leaflet';
 
 function App() {
 
@@ -58,23 +58,44 @@ function App() {
 
   useEffect(filterMarketsByProduct, [selectedProduct, supermarkets])
 
+  // Used to refocus the map when its size changes
+  const mapRef = useRef<Map | null>(null);
+
+  // Horizontal or vertical layout?
+  const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+  const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+  const horizontal = vw >= vh
+
   return (
-    <Container fluid>
-      <Row>
-        <Col xs={12} md={9} lg={6}>
+    <Container fluid style={{ height: vh }}>
+      <Split
+        sizes={[50, 50]}
+        className='full-size'
+        onDragEnd={(_sizes: any) => {
+          const map = mapRef.current
+          if (map === null) return
+          map.invalidateSize()
+        }}
+        direction={horizontal ? 'horizontal' : 'vertical'}
+        gutterSize={20}
+      >
+        <div className='split full-size'>
           <MapView
             supermarkets={supermarkets}
             onUpdateMarkets={updateMarkets}
             selectedMarkets={selectedMarkets}
+            setMap={(map: Map) => mapRef.current = map}
           />
-        </Col>
-        <Col>
+        </div>
+        <div className='split'>
           <ProductList
-            products={products} categories={exampleCategories}
-            selectedProduct={selectedProduct} onSelectProduct={updateSelected}
+            products={products}
+            categories={exampleCategories}
+            selectedProduct={selectedProduct}
+            onSelectProduct={updateSelected}
           />
-        </Col>
-      </Row>
+        </div>
+      </Split>
     </Container>
   );
 }
