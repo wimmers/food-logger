@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
-import { Icon, LatLng, LatLngTuple } from "leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, MapConsumer } from "react-leaflet";
+import { Icon, LatLng, LatLngTuple, Map } from "leaflet";
 import { OSMSupermarket } from './OSMData';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/esm/Card';
@@ -31,11 +31,12 @@ const defaultMarker = new Icon.Default()
 
 type callbackType = (supermarkets: OSMSupermarket[]) => void
 
-function MapView({ onUpdateMarkets, supermarkets, selectedMarkets }:
+function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
     {
         onUpdateMarkets: callbackType,
         supermarkets: OSMSupermarket[] | null,
-        selectedMarkets: number[]
+        selectedMarkets: number[],
+        setMap: (map: Map) => void
     }) {
 
     const [homePosition, setHomePosition] = useState<LatLng | null>(null)
@@ -108,12 +109,19 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets }:
     }
 
     return (
-        <MapContainer center={initialCenter} zoom={13} scrollWheelZoom={false}>
+        <MapContainer center={initialCenter} zoom={13} scrollWheelZoom={false} >
             <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <MapEvents />
+            <MapConsumer>
+                {(map) => {
+                    console.log('map center:', map.getCenter())
+                    setMap(map)
+                    return null
+                }}
+            </MapConsumer>
             {/* Marker for center position */}
             <Marker position={initialCenter} icon={redMarker}>
                 <Popup>
