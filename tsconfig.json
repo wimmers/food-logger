@@ -18,9 +18,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
-    /* I did not find another way to load Split.js */
-    "noImplicitAny": false
+    "jsx": "react"
   },
   "include": [
     "src"

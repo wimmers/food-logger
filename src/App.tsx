@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import MapView from './MapView';
 import ProductList, { ProductDict, exampleProducts, exampleCategories } from './ProductList'
 import { OSMSupermarket } from './OSMData';
-import Split from 'react-split'
+import Split from 'react-split';
 import { Map } from 'leaflet';
 
 function App() {
