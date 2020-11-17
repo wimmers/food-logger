@@ -3,11 +3,15 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents, MapConsumer } fro
 import { Icon, LatLng, LatLngTuple, Map } from "leaflet";
 import { OSMSupermarket } from './OSMData';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/esm/Card';
-const queryOverpass = require('@derhuerst/query-overpass')
+import Card from 'react-bootstrap/Card';
+import SplitButton from 'react-bootstrap/SplitButton';
+import Dropdown from 'react-bootstrap/Dropdown';
 import './MapView.css';
+const queryOverpass = require('@derhuerst/query-overpass')
 
 const initialCenter: LatLngTuple = [48.1351, 11.5820]
+
+const radii = [1, 2, 3, 5, 10, 15]
 
 // See: https://github.com/pointhi/leaflet-color-markers
 // Better alternative? https://github.com/lvoogdt/Leaflet.awesome-markers
@@ -46,14 +50,14 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
         onUpdateMarkets(supermarkets)
     }
 
-    const queryMarkets = () => {
+    const queryMarkets = (radius: number) => {
         const pos = homePosition
         if (pos === null) return
         const query = `
             [out:json][timeout:25];
             node
                 [shop=supermarket]
-                (around:1000, ${pos.lat}, ${pos.lng});
+                (around:${radius * 1000}, ${pos.lat}, ${pos.lng});
                 out;
         `;
         queryOverpass(query, { fetchMode: 'cors' })
@@ -132,7 +136,27 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
             {homePosition ?
                 <Marker position={homePosition} icon={goldMarker}>
                     <Popup>
-                        <Button variant="outline-primary" onClick={queryMarkets}>Find shops around here</Button>
+                        <SplitButton
+                            id='test'
+                            variant="outline-primary"
+                            title={'Find shops'}
+                            onClick={() => queryMarkets(1)}
+                        >
+                            {radii.map(radius => {
+                                return (
+                                    <Dropdown.Item
+                                        eventKey={radius.toString()}
+                                        onClick={() => queryMarkets(radius)}
+                                    >
+                                        {`Radius: ${radius} km`}
+                                    </Dropdown.Item>
+                                )
+                            }
+
+                            )}
+                            <Dropdown.Divider />
+                        </SplitButton>
+    )
                     </Popup>
                 </Marker> : null
             }
