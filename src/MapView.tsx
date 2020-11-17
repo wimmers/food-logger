@@ -5,6 +5,7 @@ import { OSMSupermarket } from './OSMData';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/esm/Card';
 const queryOverpass = require('@derhuerst/query-overpass')
+import './MapView.css';
 
 const initialCenter: LatLngTuple = [48.1351, 11.5820]
 
