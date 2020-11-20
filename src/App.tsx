@@ -1,25 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react';
+import logo from './Plaenty-04.svg'
 import './App.css';
 import Container from 'react-bootstrap/Container';
 import MapView from './MapView';
-import ProductList, { ProductDict, exampleProducts, exampleCategories } from './ProductList'
+import ProductList, { ProductDict } from './ProductList'
 import { OSMSupermarket } from './OSMData';
 import Split from 'react-split';
 import { Map } from 'leaflet';
+import { useFetch, products_categories } from './FetchData'
+import { filterProductsUrl, filterShopsUrl } from './Config';
 
 function App() {
 
-  const [products, setProducts] = useState(exampleProducts)
+  const [products, setProducts] = useState<ProductDict>([])
   const [selectedProduct, setSelectedProduct] = useState<number | undefined>(undefined)
   const [supermarkets, setSupermarkets] = useState<OSMSupermarket[] | null>(null)
   const [selectedMarkets, setSelectedMarkets] = useState<number[]>([])
 
-  const filterProductsByMarkets = (markets: OSMSupermarket[]) => {
-    const ids = Object.keys(exampleProducts).map(x => Number(x))
-    const filteredIds = ids.filter(_ => Math.random() >= 0.5)
+  const setData = (data: products_categories) => {
+    setProducts(data.products)
+    console.log("Set data!")
+  }
+
+  const [loading, data] = useFetch(setData)
+
+  async function filterProductsByMarkets(markets: OSMSupermarket[]) {
+    const ids = Object.keys(products)
+    const node_ids = markets.map(market => market.id).join()
+    console.log(node_ids)
+    const result = await fetch(filterProductsUrl + new URLSearchParams({
+      nodes: node_ids
+    }))
+    const result_data: { products: number[] } = await result.json()
+    const filteredIds = result_data.products
+    console.log(filteredIds)
     const filteredProducts = filteredIds.reduce(
       (acc: ProductDict, id) => {
-        acc[id] = exampleProducts[id];
+        acc[id] = data.products[id];
         return acc
       },
       {})
@@ -44,19 +61,24 @@ function App() {
     }
   }
 
-  const filterMarketsByProduct = () => {
+  async function filterMarketsByProduct() {
     if (supermarkets === null) return
     if (selectedProduct === undefined) {
       setSelectedMarkets([])
     }
     else {
-      const ids = supermarkets.map(market => market.id)
-      const selected = ids.filter(_ => Math.random() >= 0.5)
+      const ids = supermarkets.map(market => market.id).join()
+      const result = await fetch(filterShopsUrl + new URLSearchParams({
+        nodes: ids,
+        product: selectedProduct.toString()
+      }))
+      const result_data: { nodes: number[] } = await result.json()
+      const selected = result_data.nodes
       setSelectedMarkets(selected)
     }
   }
 
-  useEffect(filterMarketsByProduct, [selectedProduct, supermarkets])
+  useEffect(() => { filterMarketsByProduct() }, [selectedProduct, supermarkets])
 
   // Used to refocus the map when its size changes
   const mapRef = useRef<Map | null>(null);
@@ -68,6 +90,7 @@ function App() {
 
   return (
     <Container fluid style={{ height: vh }}>
+      <img src={logo} className="App-logo"></img>
       <Split
         sizes={[50, 50]}
         className='full-size'
@@ -90,7 +113,7 @@ function App() {
         <div className='split'>
           <ProductList
             products={products}
-            categories={exampleCategories}
+            categories={data.categories}
             selectedProduct={selectedProduct}
             onSelectProduct={updateSelected}
           />

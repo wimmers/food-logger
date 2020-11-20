@@ -31,7 +31,7 @@ export const exampleProducts: ProductDict = {
     }
 }
 
-type category = { name: string, products: number[] }
+export type category = { name: string, products: number[] }
 
 export const exampleCategories: category[] = [
     {
