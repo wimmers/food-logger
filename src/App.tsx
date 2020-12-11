@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import logo from './Plaenty-04.svg'
 import './App.css';
 import Container from 'react-bootstrap/Container';
 import MapView from './MapView';
@@ -90,7 +89,6 @@ function App() {
 
   return (
     <Container fluid style={{ height: vh }}>
-      <img src={logo} className="App-logo"></img>
       <Split
         sizes={[50, 50]}
         className='full-size'
