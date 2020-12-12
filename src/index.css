@@ -17,3 +17,15 @@ code {
 img.huechange-140 { filter: hue-rotate(140deg); }
 img.huechange-280 { filter: hue-rotate(280deg); }
 img.huechange-190 { filter: hue-rotate(190deg); }
+
+@media (max-width: 991px) {
+  html{font-size: 15px;}
+}
+
+@media (max-width: 767px) {
+  html{font-size: 14px;}
+}
+
+@media (max-width: 575px) {
+  html{font-size: 13px;}
+}
