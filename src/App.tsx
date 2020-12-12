@@ -8,6 +8,7 @@ import Split from 'react-split';
 import { Map } from 'leaflet';
 import { useFetch, products_categories } from './FetchData'
 import { filterProductsUrl, filterShopsUrl } from './Config';
+import { useAsyncReference } from './Util'
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState<number | undefined>(undefined)
   const [supermarkets, setSupermarkets] = useState<OSMSupermarket[] | null>(null)
   const [selectedMarkets, setSelectedMarkets] = useState<number[]>([])
+  const [splitSize, setSplitSize] = useAsyncReference<number>(50)
 
   const setData = (data: products_categories) => {
     setProducts(data.products)
@@ -86,19 +88,36 @@ function App() {
   const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
   const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
   const horizontal = vw >= vh
+  const splitPoints = [0, 25, 50, 75, 100]
+
+  const gutterSize = 20
+  const total_size = horizontal ? vh : vw
+  const split_max = (total_size - gutterSize / 2) / total_size * 100
+  const split_min = (gutterSize / 2) / total_size * 100
+
+  const onDragEnd = (sizes: any) => {
+    const size = sizes[0]
+    if (size >= split_max || size <= split_min) return
+    const old_size: number = splitSize.current
+    const down = size <= old_size
+    const newSize = down ?
+      splitPoints.reduce((last, current) => current <= size ? current : last) :
+      splitPoints.reduceRight((last, current) => current >= size ? current : last)
+    setSplitSize(newSize)
+    const map = mapRef.current
+    if (map === null) return
+    map.invalidateSize()
+  }
 
   return (
     <Container fluid style={{ height: vh }}>
       <Split
-        sizes={[50, 50]}
+        sizes={[splitSize.current, 100 - splitSize.current]}
         className='full-size'
-        onDragEnd={(_sizes: any) => {
-          const map = mapRef.current
-          if (map === null) return
-          map.invalidateSize()
-        }}
+        onDragEnd={onDragEnd}
         direction={horizontal ? 'horizontal' : 'vertical'}
         gutterSize={20}
+        minSize={0}
       >
         <div className='split full-size'>
           <MapView
