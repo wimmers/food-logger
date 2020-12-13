@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getProductsUrl } from "./Config";
-import { category, ProductDict } from "./ProductList";
+import { category, ProductDict } from "./Product";
 
 interface incoming_product {
     id: number;
@@ -13,7 +13,7 @@ interface incoming_product {
     categories_tags: string;
     stores: string;
     allergens: string;
-    nutriscore_score: number;
+    nutriscore_grade: string;
     image_url: string;
     image_small_url: string;
     image_front_url: string;
@@ -42,7 +42,10 @@ async function fetchProducts() {
             dict[product.id] = {
                 name: product.product_name,
                 description: product.generic_name,
-                image: product.image_small_url
+                image: product.image_small_url,
+                code: product.code,
+                nutriscore: product.nutriscore_grade,
+                brands: product.brands
             }
             return dict
         }, {})

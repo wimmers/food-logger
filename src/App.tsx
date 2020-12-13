@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import Container from 'react-bootstrap/Container';
 import MapView from './MapView';
-import ProductList, { ProductDict } from './ProductList'
+import ProductList from './ProductList';
+import ProductDetail from './ProductDetail';
+import { ProductDict } from './Product';
 import { OSMSupermarket } from './OSMData';
 import Split from './Split';
 import { Map } from 'leaflet';
@@ -108,12 +110,17 @@ function App() {
           selectedMarkets={selectedMarkets}
           setMap={(map: Map) => mapRef.current = map}
         />
-        <ProductList
-          products={products}
-          categories={data.categories}
-          selectedProduct={selectedProduct}
-          onSelectProduct={updateSelected}
-        />
+        {selectedProduct ?
+          <ProductDetail
+            onBack={() => setSelectedProduct(undefined)}
+            product={products[selectedProduct]}
+          /> :
+          <ProductList
+            products={products}
+            categories={data.categories}
+            selectedProduct={selectedProduct}
+            onSelectProduct={updateSelected}
+          />}
       </Split>
     </Container >
   );

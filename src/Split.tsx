@@ -50,7 +50,7 @@ export default function MySplit({
             <div className='split full-size'>
                 {children[0]}
             </div>
-            <div className='split'>
+            <div className={'split full-size'}>
                 {children[1]}
             </div>
         </Split>

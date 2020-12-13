@@ -1,62 +1,8 @@
 import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { category, product } from './Product';
 import './ProductView.css';
-
-export type product = { name: string, description: string, image?: string }
-
-export type ProductDict = {
-    [index: number]: product;
-};
-
-export const exampleProducts: ProductDict = {
-    0: {
-        name: "Vegan blu",
-        description: "A vegan blue cheese"
-    },
-    1: {
-        name: "Simply V würzige Genießerscheiben",
-        description: "The best",
-        image: "https://static.openfoodfacts.org/images/products/426/044/496/0339/front_de.7.full.jpg"
-    },
-    3: {
-        name: "Primitivo goes vegan",
-        description: "reddish goodness"
-    },
-    4: {
-        name: "Chardonnay vegan",
-        description: "weird mix of white grapes"
-    }
-}
-
-export type category = { name: string, products: number[] }
-
-export const exampleCategories: category[] = [
-    {
-        name: 'Cheeses',
-        products: [
-            0,
-            1,
-            0,
-            1,
-            0,
-            1
-        ]
-    },
-    {
-        name: 'Wines',
-        products: [
-            3,
-            4,
-            3,
-            4,
-            3,
-            4
-        ]
-    }
-]
 
 type ProductCardProps = {
     product: product;
@@ -71,15 +17,15 @@ function ProductCard({ product, onClick, selected }: ProductCardProps) {
             bg={selected ? 'primary' : undefined}
             text={selected ? 'light' : undefined}
         >
-            {product.image ?
-                (<Card.Img variant="top" src={product.image} className="product-img" />)
-                : (<div className="product-img" />)}
-            <Card.Body>
-                <Card.Title>{product.name}</Card.Title>
-                <Card.Text>
-                    {product.description}
-                </Card.Text>
-            </Card.Body>
+            <div className="card-horizontal">
+                {product.image ?
+                    (<img src={product.image} className="product-img" />)
+                    : (<div className="product-img" />)}
+                <Card.Body className="pt-1">
+                    <Card.Text className="mb-1">{product.name}</Card.Text>
+                    <Card.Text className="text-muted list-brand-text">{product.brands}</Card.Text>
+                </Card.Body>
+            </div>
         </Card>
     )
 }
@@ -111,7 +57,7 @@ function ProductList({ categories, products, onSelectProduct, selectedProduct }:
 
     const categoryComponents = categories.map((category, index, _array) => {
         return (
-            <Card key={index}>
+            <Card key={index} className="w-100">
                 <Accordion.Toggle as={Card.Header} eventKey={index.toString()}>
                     {category.name}
                 </Accordion.Toggle>

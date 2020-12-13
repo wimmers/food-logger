@@ -4,6 +4,16 @@
 }
 
 .product-img {
-    height: 10em;
+    max-width: 20%;
+    max-height: 5em;
     object-fit: contain;
+}
+
+.card-horizontal {
+    display: flex;
+    flex: 1 1 auto;
+  }
+
+.list-brand-text {
+    font-size: 80%;
 }
