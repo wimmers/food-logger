@@ -8,6 +8,7 @@ import SplitButton from 'react-bootstrap/SplitButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import './MapView.css';
 import LocateControl from './LocateControl';
+import Spinner from 'react-bootstrap/Spinner';
 const queryOverpass = require('@derhuerst/query-overpass')
 
 const initialCenter: LatLngTuple = [48.1351, 11.5820]
@@ -52,6 +53,56 @@ const OpenPopupMarker = (props: any) => {
     })
 
     return <Marker ref={myref} {...props} />
+}
+
+const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius: number) => void }) => {
+
+    const [loading, setLoading] = useState(false)
+
+    const doQuery = (radius: number) => {
+        setLoading(true)
+        query(radius)
+    }
+
+    return (
+        <OpenPopupMarker position={pos} icon={goldMarker} >
+            <Popup>
+                {loading ?
+                    (<Button
+                        variant="outline-primary"
+                        disabled={loading}
+                    >
+                        <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                            className="mr-2"
+                        />
+                        Loading..
+                    </Button>) :
+                    (<SplitButton
+                        id='test'
+                        variant="outline-primary"
+                        title={'Find shops'}
+                        onClick={() => doQuery(1)}
+                        disabled={loading}
+                    >
+                        {radii.map(radius => {
+                            return (
+                                <Dropdown.Item
+                                    eventKey={radius.toString()}
+                                    onClick={() => doQuery(radius)}
+                                >
+                                    {`Radius: ${radius} km`}
+                                </Dropdown.Item>)
+                        })}
+                        <Dropdown.Divider />
+                    </SplitButton>)}
+            </Popup>
+        </OpenPopupMarker >
+    )
 }
 
 function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
@@ -135,29 +186,6 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
         })
     }
 
-    const homeMarker =
-        <OpenPopupMarker position={homePosition} icon={goldMarker} >
-            <Popup>
-                <SplitButton
-                    id='test'
-                    variant="outline-primary"
-                    title={'Find shops'}
-                    onClick={() => queryMarkets(1)}
-                >
-                    {radii.map(radius => {
-                        return (
-                            <Dropdown.Item
-                                eventKey={radius.toString()}
-                                onClick={() => queryMarkets(radius)}
-                            >
-                                {`Radius: ${radius} km`}
-                            </Dropdown.Item>)
-                    })}
-                    <Dropdown.Divider />
-                </SplitButton>
-            </Popup>
-        </OpenPopupMarker >
-
     return (
         <>
             <MapContainer center={initialCenter} zoom={13} scrollWheelZoom={false} >
@@ -180,7 +208,7 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
                         This is Munich on OSM. <br /> Try to click somewhere else.
                 </Popup>
                 </Marker>
-                {homePosition ? homeMarker : null}
+                {homePosition ? <HomeMarker pos={homePosition} query={queryMarkets} /> : null}
                 {getMarkets()}
             </MapContainer>
         </>
