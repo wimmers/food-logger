@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, MapConsumer } from "react-leaflet";
 import { Icon, LatLng, LatLngTuple, Map } from "leaflet";
 import { OSMSupermarket } from './OSMData';
@@ -6,7 +6,10 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import SplitButton from 'react-bootstrap/SplitButton';
 import Dropdown from 'react-bootstrap/Dropdown';
+import Fab from '@material-ui/core/Fab';
+import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import './MapView.css';
+import LocateControl from './LocateControl';
 const queryOverpass = require('@derhuerst/query-overpass')
 
 const initialCenter: LatLngTuple = [48.1351, 11.5820]
@@ -45,6 +48,7 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
     }) {
 
     const [homePosition, setHomePosition] = useState<LatLng | null>(null)
+    const [map, updMap] = useState<Map | undefined>(undefined)
 
     const updateMarkets = (supermarkets: OSMSupermarket[]) => {
         onUpdateMarkets(supermarkets)
@@ -68,11 +72,13 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
     function MapEvents() {
         useMapEvents({
             click: e => {
-                // map.locate()
                 setHomePosition(e.latlng)
             },
-            locationfound: (location) => {
-                console.log('location found:', location)
+            locationfound: (e) => {
+                setHomePosition(e.latlng)
+                if (map) {
+                    map.flyTo(e.latlng, map.getZoom())
+                }
             },
         })
         return null
@@ -101,7 +107,7 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
                                 </Card.Title>
                                 {data.brand ? (<Card.Text>{'Brand: ' + data.brand}</Card.Text>) : null}
                                 {data["addr:street"] !== undefined ? (<Card.Text>{address} </Card.Text>) : null}
-                                <Button variant="outline-primary" onClick={_ => updateMarkets([market])}>Find products at this shop</Button>
+                                <Button variant="outline-primary" onClick={_ => updateMarkets([market])}>Find products!</Button>
                             </Card.Body>
                         </Card>
                     </Popup>
@@ -114,54 +120,57 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
     }
 
     return (
-        <MapContainer center={initialCenter} zoom={13} scrollWheelZoom={false} >
-            <TileLayer
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <MapEvents />
-            <MapConsumer>
-                {(map) => {
-                    console.log('map center:', map.getCenter())
-                    setMap(map)
-                    return null
-                }}
-            </MapConsumer>
-            {/* Marker for center position */}
-            <Marker position={initialCenter} icon={redMarker}>
-                <Popup>
-                    This is Munich on OSM. <br /> Try to click somewhere else.
-                </Popup>
-            </Marker>
-            {homePosition ?
-                <Marker position={homePosition} icon={goldMarker}>
+        <>
+            <MapContainer center={initialCenter} zoom={13} scrollWheelZoom={false} >
+                <TileLayer
+                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <MapEvents />
+                <MapConsumer>
+                    {(map) => {
+                        setMap(map)
+                        updMap(map)
+                        return null
+                    }}
+                </MapConsumer>
+                <LocateControl />
+                {/* Marker for center position */}
+                <Marker position={initialCenter} icon={redMarker}>
                     <Popup>
-                        <SplitButton
-                            id='test'
-                            variant="outline-primary"
-                            title={'Find shops'}
-                            onClick={() => queryMarkets(1)}
-                        >
-                            {radii.map(radius => {
-                                return (
-                                    <Dropdown.Item
-                                        eventKey={radius.toString()}
-                                        onClick={() => queryMarkets(radius)}
-                                    >
-                                        {`Radius: ${radius} km`}
-                                    </Dropdown.Item>
-                                )
-                            }
+                        This is Munich on OSM. <br /> Try to click somewhere else.
+                </Popup>
+                </Marker>
+                {homePosition ?
+                    <Marker position={homePosition} icon={goldMarker}>
+                        <Popup>
+                            <SplitButton
+                                id='test'
+                                variant="outline-primary"
+                                title={'Find shops'}
+                                onClick={() => queryMarkets(1)}
+                            >
+                                {radii.map(radius => {
+                                    return (
+                                        <Dropdown.Item
+                                            eventKey={radius.toString()}
+                                            onClick={() => queryMarkets(radius)}
+                                        >
+                                            {`Radius: ${radius} km`}
+                                        </Dropdown.Item>
+                                    )
+                                }
 
-                            )}
-                            <Dropdown.Divider />
-                        </SplitButton>
+                                )}
+                                <Dropdown.Divider />
+                            </SplitButton>
     )
                     </Popup>
-                </Marker> : null
-            }
-            {getMarkets()}
-        </MapContainer>
+                    </Marker> : null
+                }
+                {getMarkets()}
+            </MapContainer>
+        </>
     )
 }
 
