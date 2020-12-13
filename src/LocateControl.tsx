@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Locate from "leaflet.locatecontrol";
 import L from 'leaflet';
 import { createControlComponent } from '@react-leaflet/core';
