@@ -5,6 +5,11 @@ import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 
 export type SearchState = { categories: string[], brands: string[], products: string[] }
+export const emptySearchState: SearchState = {
+    categories: [],
+    brands: [],
+    products: []
+}
 
 const stateToSuggestions = ({ categories, brands, products }: SearchState) => {
     const empty: string[] = []

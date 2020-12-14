@@ -11,6 +11,7 @@ import Split from './Split';
 import { Map } from 'leaflet';
 import { useFetch, products_categories } from './FetchData'
 import { filterProductsUrl, filterShopsUrl } from './Config';
+import { SearchState, emptySearchState } from './ProductSearch';
 
 function App() {
 
@@ -20,10 +21,16 @@ function App() {
   const [selectedMarkets, setSelectedMarkets] = useState<number[]>([])
   const [menuVisible, setMenuVisible] = useState(false)
   const [searchInputState, setSearchInputState] = useState<string[]>([])
+  const [searchState, setSearchState] = useState<SearchState>(emptySearchState)
 
   const setData = (data: products_categories) => {
     setProducts(data.products)
     console.log("Set data!")
+  }
+
+  const onChangeSearchState = (values: string[], state: SearchState) => {
+    setSearchInputState(values)
+    setSearchState(state)
   }
 
   const [loading, data] = useFetch(setData)
@@ -37,7 +44,6 @@ function App() {
     }))
     const result_data: { products: number[] } = await result.json()
     const filteredIds = result_data.products
-    console.log(filteredIds)
     const filteredProducts = filteredIds.reduce(
       (acc: ProductDict, id) => {
         acc[id] = data.products[id];
@@ -98,6 +104,24 @@ function App() {
     map.invalidateSize()
   }
 
+  const productIndices = Object.keys(products).map(x => Number(x))
+  const filteredProducts = productIndices.reduce(
+    (acc: ProductDict, index: number) => {
+      const product = products[index]
+      const isInProducts = searchState.products.length == 0 || searchState.products.includes(product.name)
+      const isInBrands = searchState.brands.length == 0 || searchState.brands.includes(product.brands)
+      if (isInProducts && isInBrands) {
+        acc[index] = product
+      }
+      return acc
+    },
+    {}
+  )
+  const filteredCategories =
+    searchState.categories.length == 0 ?
+      data.categories :
+      data.categories.filter(category => searchState.categories.includes(category.name))
+
   return (
     <>
       <Menu open={menuVisible} onClose={() => setMenuVisible(false)} />
@@ -122,12 +146,12 @@ function App() {
               product={products[selectedProduct]}
             /> :
             <ProductList
-              products={products}
-              categories={data.categories}
+              products={filteredProducts}
+              categories={filteredCategories}
               selectedProduct={selectedProduct}
               onSelectProduct={updateSelected}
-              searchState={searchInputState}
-              onChangeSearchState={setSearchInputState}
+              searchInputState={searchInputState}
+              onChangeSearchState={onChangeSearchState}
             />}
         </Split>
       </Container >

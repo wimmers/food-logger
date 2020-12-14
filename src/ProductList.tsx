@@ -40,13 +40,13 @@ type ProductListProps = {
     };
     onSelectProduct: (_: number) => void;
     selectedProduct?: number;
-    searchState: string[];
-    onChangeSearchState: (values: string[]) => void;
+    searchInputState: string[];
+    onChangeSearchState: (values: string[], state: SearchState) => void;
 };
 
 function ProductList(
     { categories, products, onSelectProduct, selectedProduct,
-        searchState, onChangeSearchState }: ProductListProps
+        searchInputState, onChangeSearchState }: ProductListProps
 ) {
 
     const productList = (ids: number[]) => {
@@ -85,19 +85,20 @@ function ProductList(
         (key: string) => products[Number(key)].name
     )
 
+    const brands = Array.from(new Set(
+        Object.keys(products).map(index => products[Number(index)].brands)
+    ))
+
     return (
         <>
             <ProductSearch
                 defaultValue={{
-                    brands: ["Beda", "Simply V"],
+                    brands,
                     categories: categories.map(category => category.name),
                     products: productNames
                 }}
-                onChange={(values, state) => {
-                    onChangeSearchState(values)
-                    console.log(state)
-                }}
-                value={searchState}
+                onChange={onChangeSearchState}
+                value={searchInputState}
             />
             <Accordion defaultActiveKey="0">
                 {categoryComponents}
