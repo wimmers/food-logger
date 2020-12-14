@@ -6,9 +6,12 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import SplitButton from 'react-bootstrap/SplitButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import './MapView.css';
 import LocateControl from './LocateControl';
 import Spinner from 'react-bootstrap/Spinner';
+import SearchControl from './GeoSearchControl';
+import 'leaflet-geosearch/dist/geosearch.css';
+import './MapView.css';
+import L from 'leaflet';
 const queryOverpass = require('@derhuerst/query-overpass')
 
 const initialCenter: LatLngTuple = [48.1351, 11.5820]
@@ -136,19 +139,27 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
             .catch(console.error)
     }
 
+    const flyHome = (pos: LatLng) => {
+        setHomePosition(pos)
+        if (map) {
+            map.flyTo(pos, map.getZoom())
+        }
+    }
+
     function MapEvents() {
         useMapEvents({
             click: e => {
                 setHomePosition(e.latlng)
             },
             locationfound: (e) => {
-                setHomePosition(e.latlng)
-                if (map) {
-                    map.flyTo(e.latlng, map.getZoom())
-                }
-            },
+                flyHome(e.latlng)
+            }
         })
         return null
+    }
+
+    const onSearchLocate = (e: any) => {
+        flyHome(L.latLng(e.location.y, e.location.x))
     }
 
     const getMarkets = () => {
@@ -198,10 +209,14 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
                     {(map) => {
                         setMap(map)
                         updMap(map)
+                        map.on('geosearch/showlocation', onSearchLocate)
                         return null
                     }}
                 </MapConsumer>
-                <LocateControl />
+                <SearchControl style={"bar"} showMarker={false} showPopup={false}
+                    retainZoomLevel={true} autoClose={true}
+                    searchLabel={'Enter address'} keepResult={true} />
+                <LocateControl keepCurrentZoomLevel={true} drawMarker={false} />
                 {/* Marker for center position */}
                 <Marker position={initialCenter} icon={redMarker}>
                     <Popup>

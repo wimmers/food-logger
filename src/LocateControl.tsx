@@ -6,7 +6,7 @@ import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css';
 const _ = Locate
 
 const LocateControl = createControlComponent(
-    (props) => L.control.locate()
+    (props: any) => L.control.locate(props)
 )
 
 export default LocateControl;
