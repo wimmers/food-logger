@@ -2,7 +2,7 @@ import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import { category, product } from './Product';
-import ProductSearch from './ProductSearch'
+import ProductSearch, { SearchState } from './ProductSearch'
 import './ProductView.css';
 
 type ProductCardProps = {
@@ -11,7 +11,9 @@ type ProductCardProps = {
     selected: boolean;
 };
 
-function ProductCard({ product, onClick, selected }: ProductCardProps) {
+function ProductCard(
+    { product, onClick, selected }: ProductCardProps
+) {
     return (
         <Card
             onClick={onClick}
@@ -38,9 +40,14 @@ type ProductListProps = {
     };
     onSelectProduct: (_: number) => void;
     selectedProduct?: number;
+    searchState: string[];
+    onChangeSearchState: (values: string[]) => void;
 };
 
-function ProductList({ categories, products, onSelectProduct, selectedProduct }: ProductListProps) {
+function ProductList(
+    { categories, products, onSelectProduct, selectedProduct,
+        searchState, onChangeSearchState }: ProductListProps
+) {
 
     const productList = (ids: number[]) => {
         return ids.map((id) => {
@@ -73,7 +80,7 @@ function ProductList({ categories, products, onSelectProduct, selectedProduct }:
         )
     })
 
-    // In ES7 we could use products.values() but let's avoid polyfills for now.
+    // In ES7 we could use products.values() but let us avoid polyfills for now.
     const productNames = Object.keys(products).map(
         (key: string) => products[Number(key)].name
     )
@@ -81,9 +88,16 @@ function ProductList({ categories, products, onSelectProduct, selectedProduct }:
     return (
         <>
             <ProductSearch
-                brands={["Beda", "Simply V"]}
-                categories={categories.map(category => category.name)}
-                products={productNames}
+                defaultValue={{
+                    brands: ["Beda", "Simply V"],
+                    categories: categories.map(category => category.name),
+                    products: productNames
+                }}
+                onChange={(values, state) => {
+                    onChangeSearchState(values)
+                    console.log(state)
+                }}
+                value={searchState}
             />
             <Accordion defaultActiveKey="0">
                 {categoryComponents}

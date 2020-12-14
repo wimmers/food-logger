@@ -19,6 +19,7 @@ function App() {
   const [supermarkets, setSupermarkets] = useState<OSMSupermarket[] | null>(null)
   const [selectedMarkets, setSelectedMarkets] = useState<number[]>([])
   const [menuVisible, setMenuVisible] = useState(false)
+  const [searchInputState, setSearchInputState] = useState<string[]>([])
 
   const setData = (data: products_categories) => {
     setProducts(data.products)
@@ -125,6 +126,8 @@ function App() {
               categories={data.categories}
               selectedProduct={selectedProduct}
               onSelectProduct={updateSelected}
+              searchState={searchInputState}
+              onChangeSearchState={setSearchInputState}
             />}
         </Split>
       </Container >
