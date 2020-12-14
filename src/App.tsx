@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import Container from 'react-bootstrap/Container';
+import Menu from './Menu';
 import MapView from './MapView';
 import ProductList from './ProductList';
 import ProductDetail from './ProductDetail';
@@ -17,6 +18,7 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState<number | undefined>(undefined)
   const [supermarkets, setSupermarkets] = useState<OSMSupermarket[] | null>(null)
   const [selectedMarkets, setSelectedMarkets] = useState<number[]>([])
+  const [menuVisible, setMenuVisible] = useState(false)
 
   const setData = (data: products_categories) => {
     setProducts(data.products)
@@ -96,33 +98,37 @@ function App() {
   }
 
   return (
-    <Container fluid style={{ height: vh }}>
-      <Split
-        onDrag={onDrag}
-        direction={horizontal ? 'horizontal' : 'vertical'}
-        gutterSize={20}
-        totalSize={horizontal ? vw : vh}
-        minSize={0}
-      >
-        <MapView
-          supermarkets={supermarkets}
-          onUpdateMarkets={updateMarkets}
-          selectedMarkets={selectedMarkets}
-          setMap={(map: Map) => mapRef.current = map}
-        />
-        {selectedProduct ?
-          <ProductDetail
-            onBack={() => setSelectedProduct(undefined)}
-            product={products[selectedProduct]}
-          /> :
-          <ProductList
-            products={products}
-            categories={data.categories}
-            selectedProduct={selectedProduct}
-            onSelectProduct={updateSelected}
-          />}
-      </Split>
-    </Container >
+    <>
+      <Menu open={menuVisible} onClose={() => setMenuVisible(false)} />
+      <Container fluid style={{ height: vh }}>
+        <Split
+          onDrag={onDrag}
+          direction={horizontal ? 'horizontal' : 'vertical'}
+          gutterSize={20}
+          totalSize={horizontal ? vw : vh}
+          minSize={0}
+        >
+          <MapView
+            onUpdateMarkets={updateMarkets}
+            onOpenMenu={() => setMenuVisible(true)}
+            supermarkets={supermarkets}
+            selectedMarkets={selectedMarkets}
+            setMap={(map: Map) => mapRef.current = map}
+          />
+          {selectedProduct ?
+            <ProductDetail
+              onBack={() => setSelectedProduct(undefined)}
+              product={products[selectedProduct]}
+            /> :
+            <ProductList
+              products={products}
+              categories={data.categories}
+              selectedProduct={selectedProduct}
+              onSelectProduct={updateSelected}
+            />}
+        </Split>
+      </Container >
+    </>
   );
 }
 

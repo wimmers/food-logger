@@ -9,7 +9,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import LocateControl from './LocateControl';
 import Spinner from 'react-bootstrap/Spinner';
 import SearchControl from './GeoSearchControl';
-import 'leaflet-geosearch/dist/geosearch.css';
+import MapMenuButton from './MapMenuButton';
 import './MapView.css';
 import L from 'leaflet';
 const queryOverpass = require('@derhuerst/query-overpass')
@@ -108,9 +108,10 @@ const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius?: number) => v
     )
 }
 
-function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
+function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, setMap }:
     {
         onUpdateMarkets: callbackType,
+        onOpenMenu: () => void,
         supermarkets: OSMSupermarket[] | null,
         selectedMarkets: number[],
         setMap: (map: Map) => void
@@ -223,6 +224,7 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
                         return null
                     }}
                 </MapConsumer>
+                <MapMenuButton onClick={() => onOpenMenu()} />
                 <SearchControl style={"bar"} showMarker={false} showPopup={false}
                     retainZoomLevel={true} autoClose={true}
                     searchLabel={'Enter address'} keepResult={true} />
