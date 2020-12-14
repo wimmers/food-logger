@@ -2,6 +2,7 @@ import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import { category, product } from './Product';
+import ProductSearch from './ProductSearch'
 import './ProductView.css';
 
 type ProductCardProps = {
@@ -72,10 +73,22 @@ function ProductList({ categories, products, onSelectProduct, selectedProduct }:
         )
     })
 
+    // In ES7 we could use products.values() but let's avoid polyfills for now.
+    const productNames = Object.keys(products).map(
+        (key: string) => products[Number(key)].name
+    )
+
     return (
-        <Accordion defaultActiveKey="0">
-            {categoryComponents}
-        </Accordion>
+        <>
+            <ProductSearch
+                brands={["Beda", "Simply V"]}
+                categories={categories.map(category => category.name)}
+                products={productNames}
+            />
+            <Accordion defaultActiveKey="0">
+                {categoryComponents}
+            </Accordion>
+        </>
     )
 }
 
