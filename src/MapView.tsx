@@ -58,11 +58,11 @@ const OpenPopupMarker = (props: any) => {
     return <Marker ref={myref} {...props} />
 }
 
-const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius: number) => void }) => {
+const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius?: number) => void }) => {
 
     const [loading, setLoading] = useState(false)
 
-    const doQuery = (radius: number) => {
+    const doQuery = (radius?: number) => {
         setLoading(true)
         query(radius)
     }
@@ -89,7 +89,7 @@ const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius: number) => vo
                         id='test'
                         variant="outline-primary"
                         title={'Find shops'}
-                        onClick={() => doQuery(1)}
+                        onClick={() => doQuery(undefined)}
                         disabled={loading}
                     >
                         {radii.map(radius => {
@@ -123,14 +123,24 @@ function MapView({ onUpdateMarkets, supermarkets, selectedMarkets, setMap }:
         onUpdateMarkets(supermarkets)
     }
 
-    const queryMarkets = (radius: number) => {
-        const pos = homePosition
-        if (pos === null) return
+    const queryMarkets = (radius?: number) => {
+        let queryArea: string;
+        if (!radius && map) {
+            const bounds = map.getBounds()
+            const [s, e, n, w] = [bounds.getSouth(), bounds.getEast(), bounds.getNorth(), bounds.getWest()]
+            queryArea = `(${s}, ${w}, ${n}, ${e})`
+        }
+        else {
+            const pos = homePosition
+            if (pos === null) return
+            radius = radius ? radius : 1
+            queryArea = `(around:${radius * 1000}, ${pos.lat}, ${pos.lng})`
+        }
         const query = `
             [out:json][timeout:25];
             node
                 [shop=supermarket]
-                (around:${radius * 1000}, ${pos.lat}, ${pos.lng});
+                ${queryArea};
                 out;
         `;
         queryOverpass(query, { fetchMode: 'cors' })
