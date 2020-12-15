@@ -229,12 +229,6 @@ function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, s
                     retainZoomLevel={true} autoClose={true}
                     searchLabel={'Enter address'} keepResult={true} />
                 <LocateControl keepCurrentZoomLevel={true} drawMarker={false} />
-                {/* Marker for center position */}
-                <Marker position={initialCenter} icon={redMarker}>
-                    <Popup>
-                        This is Munich on OSM. <br /> Try to click somewhere else.
-                </Popup>
-                </Marker>
                 {homePosition ? <HomeMarker pos={homePosition} query={queryMarkets} /> : null}
                 {getMarkets()}
             </MapContainer>
