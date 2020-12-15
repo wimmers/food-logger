@@ -92,6 +92,10 @@ function ProductList(
     }
 
     const categoryComponents = categories.map((category, index, _array) => {
+        const products = productList(category.products).filter(x => x)
+        if (!products.length) {
+            return null
+        }
         return (
             <Card key={index} className="w-100">
                 <Accordion.Toggle as={Card.Header} eventKey={index.toString()}>
@@ -100,13 +104,13 @@ function ProductList(
                 <Accordion.Collapse eventKey={index.toString()}>
                     <Card.Body>
                         <div className="card-columns">
-                            {productList(category.products)}
+                            {products}
                         </div>
                     </Card.Body>
                 </Accordion.Collapse>
             </Card>
         )
-    })
+    }).filter(x => x)
 
     // In ES7 we could use products.values() but let us avoid polyfills for now.
     const productNames = Object.keys(products).map(
