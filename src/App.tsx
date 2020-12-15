@@ -129,9 +129,9 @@ function App() {
   const filteredProducts = productIndices.reduce(
     (acc: ProductDict, index: number) => {
       const product = products[index]
-      const isInProducts = searchState.products.length === 0 || searchState.products.includes(product.name)
-      const isInBrands = searchState.brands.length === 0 || searchState.brands.includes(product.brands)
-      const isInCodes = searchState.codes.length === 0 || searchState.codes.includes(product.code)
+      const isInProducts = !searchState.products.length || searchState.products.includes(product.name)
+      const isInBrands = !searchState.brands.length || searchState.brands.includes(product.brands)
+      const isInCodes = !searchState.codes.length || searchState.codes.includes(product.code)
       if (isInProducts && isInBrands && isInCodes) {
         acc[index] = product
       }
