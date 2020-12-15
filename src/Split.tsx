@@ -1,9 +1,11 @@
 import { useAsyncReference } from './Util'
 import Split from 'react-split';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function MySplit({
-    totalSize, gutterSize, direction, minSize = 0, splitPoints = [0, 25, 50, 75, 100], onDrag, children }:
+    totalSize, gutterSize, direction, minSize = 0,
+    splitPoints = [0, 25, 50, 75, 100],
+    onDrag, children, collapsed }:
     {
         totalSize: number,
         gutterSize: number,
@@ -11,7 +13,8 @@ export default function MySplit({
         minSize?: number,
         splitPoints?: number[],
         onDrag: () => void,
-        children: JSX.Element[]
+        children: JSX.Element[],
+        collapsed: boolean
     }) {
 
     const [splitSize, setSplitSize] = useAsyncReference<number>(50)
@@ -37,6 +40,12 @@ export default function MySplit({
         }
         onDrag()
     }
+
+    useEffect(() => {
+        if (collapsed && direction === 'vertical') {
+            setSplitSize(0)
+        }
+    }, [collapsed])
 
     return (
         <Split

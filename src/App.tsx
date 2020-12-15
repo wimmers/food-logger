@@ -158,6 +158,7 @@ function App() {
           gutterSize={20}
           totalSize={horizontal ? vw : vh}
           minSize={0}
+          collapsed={supermarkets!==null && supermarkets.length === 1}
         >
           <MapView
             onUpdateMarkets={updateMarkets}

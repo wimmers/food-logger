@@ -196,7 +196,9 @@ function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, s
                                 </Card.Title>
                                 {data.brand ? (<Card.Text>{'Brand: ' + data.brand}</Card.Text>) : null}
                                 {data["addr:street"] !== undefined ? (<Card.Text>{address} </Card.Text>) : null}
-                                <Button variant="outline-primary" onClick={_ => updateMarkets([market])}>Find products!</Button>
+                                <Button variant="outline-primary" onClick={_ => updateMarkets([market])}>
+                                    Find products!
+                                </Button>
                             </Card.Body>
                         </Card>
                     </Popup>
