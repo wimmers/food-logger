@@ -9,6 +9,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import HelpIcon from '@material-ui/icons/Help';
 import CheckIcon from '@material-ui/icons/Check';
 import CropFreeIcon from '@material-ui/icons/CropFree';
+import './Menu.css';
 
 type MenuElement = [string, JSX.Element, () => void]
 
@@ -40,6 +41,7 @@ function Menu({ open, onClose, onTagProducts }: {
     const list = () => (
         <div
             role="presentation"
+            className="menu"
         >
             <List>
                 {makeListItems(mainElements)}
