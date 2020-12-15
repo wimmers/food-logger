@@ -79,6 +79,7 @@ function ProductSearch(
             renderInput={(params) => (
                 <TextField
                     {...params}
+                    variant="filled"
                     label={<span><SearchIcon /> Filter products</span>}
                     placeholder="Products, categories, or brands"
                 />
