@@ -117,13 +117,18 @@ function ProductList(
         Object.keys(products).map(index => products[Number(index)].brands)
     ))
 
+    const codes = Object.keys(products).map(
+        (key: string) => products[Number(key)].code
+    )
+
     return (
         <>
             <ProductSearch
                 defaultValue={{
                     brands,
                     categories: categories.map(category => category.name),
-                    products: productNames
+                    products: productNames,
+                    codes
                 }}
                 onChange={onChangeSearchState}
                 value={searchInputState}

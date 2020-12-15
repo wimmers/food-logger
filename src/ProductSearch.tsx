@@ -4,19 +4,28 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 
-export type SearchState = { categories: string[], brands: string[], products: string[] }
+export type SearchState = {
+    categories: string[],
+    brands: string[],
+    products: string[],
+    codes: number[],
+}
 export const emptySearchState: SearchState = {
     categories: [],
     brands: [],
-    products: []
+    products: [],
+    codes: [],
 }
 
-const stateToSuggestions = ({ categories, brands, products }: SearchState) => {
+const reCode = /[0-9]+/
+
+const stateToSuggestions = ({ categories, brands, products, codes }: SearchState) => {
     const empty: string[] = []
     const suggestions = empty.concat(
         categories.map(category => `Category: ${category}`),
         brands.map(brand => `Brand: ${brand}`),
-        products
+        products,
+        codes.map(n => n.toString())
     )
     return suggestions
 }
@@ -43,11 +52,13 @@ function ProductSearch(
         const markers = ['Brand', 'Category'].map(marker => `${marker}: `)
         const regexString = markers.join('|')
         const regex = RegExp(regexString)
-        const products = values.filter(s => !s.match(regex))
+        const products = values.filter(s => !s.match(regex) && !s.match(reCode))
+        const codes = values.filter(s => s.match(reCode)).map(s => +s)
         const newState = {
             brands,
             categories,
-            products
+            products,
+            codes
         }
         onChange(values, newState)
     }
