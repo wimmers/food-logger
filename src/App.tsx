@@ -20,7 +20,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 function App() {
 
-  const [products, setProducts] = useState<ProductDict>([])
+  const [products, setProducts] = useState<ProductDict>({})
   const [selectedProduct, setSelectedProduct] = useState<number | undefined>(undefined)
   const [supermarkets, setSupermarkets] = useState<OSMSupermarket[] | null>(null)
   const [selectedMarkets, setSelectedMarkets] = useState<number[]>([])
@@ -28,10 +28,11 @@ function App() {
   const [searchInputState, setSearchInputState] = useState<string[]>([])
   const [searchState, setSearchState] = useState<SearchState>(emptySearchState)
   const [tagging, toggleTagging] = useToggle(false)
+  const [availableProductIds, setAvailableProductIds] = useState<number[]>([])
 
   const setData = (data: products_categories) => {
     setProducts(data.products)
-    console.log("Set data!")
+    setAvailableProductIds(Object.keys(data.products).map(x => +x))
   }
 
   const onChangeSearchState = (values: string[], state: SearchState) => {
@@ -58,23 +59,16 @@ function App() {
 
   async function filterProductsByMarkets(markets: OSMSupermarket[]) {
     const ids = Object.keys(products)
-    const node_ids = markets.map(market => market.id).join()
-    console.log(node_ids)
+    const nodeIds = markets.map(market => market.id).join()
     const result = await fetch(filterProductsUrl + new URLSearchParams({
-      nodes: node_ids
+      nodes: nodeIds
     }))
-    const result_data: { products: number[] } = await result.json()
-    const filteredIds = result_data.products
-    const filteredProducts = filteredIds.reduce(
-      (acc: ProductDict, id) => {
-        acc[id] = data.products[id];
-        return acc
-      },
-      {})
+    const resultData: { products: number[] } = await result.json()
+    const filteredIds = resultData.products
     if (selectedProduct !== undefined && !filteredIds.includes(selectedProduct)) {
       setSelectedProduct(undefined)
     }
-    setProducts(filteredProducts)
+    setAvailableProductIds(filteredIds)
   }
 
   const updateMarkets = (markets: OSMSupermarket[]) => {
@@ -103,8 +97,8 @@ function App() {
         nodes: ids,
         product: selectedProduct.toString()
       }))
-      const result_data: { nodes: number[] } = await result.json()
-      const selected = result_data.nodes
+      const resultData: { nodes: number[] } = await result.json()
+      const selected = resultData.nodes
       setSelectedMarkets(selected)
     }
   }
@@ -158,7 +152,7 @@ function App() {
           gutterSize={20}
           totalSize={horizontal ? vw : vh}
           minSize={0}
-          collapsed={supermarkets!==null && supermarkets.length === 1}
+          collapsed={supermarkets !== null && supermarkets.length === 1}
         >
           <MapView
             onUpdateMarkets={updateMarkets}
@@ -178,7 +172,7 @@ function App() {
             <ProductList
               products={filteredProducts}
               categories={filteredCategories}
-              selectedProduct={selectedProduct}
+              availableProductIds={new Set(availableProductIds)}
               onSelectProduct={updateSelected}
               searchInputState={searchInputState}
               onChangeSearchState={onChangeSearchState}

@@ -10,19 +10,18 @@ import './ProductView.css';
 type ProductCardProps = {
     product: product;
     onClick: () => void;
-    selected: boolean;
+    available: boolean;
     tagging: boolean;
     onTag: () => void;
 };
 
 function ProductCard(
-    { product, onClick, selected, tagging, onTag }: ProductCardProps
+    { product, onClick, available, tagging, onTag }: ProductCardProps
 ) {
     return (
         <Card
             onClick={onClick}
-            bg={selected ? 'primary' : undefined}
-            text={selected ? 'light' : undefined}
+            bg={available ? undefined: 'light'}
         >
             <div className="card-horizontal">
                 {product.image ?
@@ -54,8 +53,8 @@ type ProductListProps = {
     products: {
         [index: number]: product;
     };
+    availableProductIds: Set<number>;
     onSelectProduct: (_: number) => void;
-    selectedProduct?: number;
     searchInputState: string[];
     onChangeSearchState: (values: string[], state: SearchState) => void;
     tagging: boolean,
@@ -66,8 +65,8 @@ function ProductList(
     {
         categories,
         products,
+        availableProductIds,
         onSelectProduct,
-        selectedProduct,
         searchInputState,
         onChangeSearchState,
         tagging,
@@ -78,11 +77,15 @@ function ProductList(
     const productList = (ids: number[]) => {
         return ids.map((id) => {
             if (products[id] === undefined) return null
+            const available = availableProductIds.has(id)
+            if (!available && !tagging) {
+                return null
+            }
             return (
                 <ProductCard
                     product={products[id]}
                     onClick={() => { onSelectProduct(id) }}
-                    selected={selectedProduct === id}
+                    available={available}
                     key={id}
                     tagging={tagging}
                     onTag={() => onTag(id)}
