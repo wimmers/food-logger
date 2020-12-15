@@ -5,32 +5,48 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import InfoIcon from '@material-ui/icons/Info';
+import HelpIcon from '@material-ui/icons/Help';
+import CheckIcon from '@material-ui/icons/Check';
+import CropFreeIcon from '@material-ui/icons/CropFree';
 
-function Menu({ open, onClose }: { open: boolean, onClose: () => void }) {
+type MenuElement = [string, JSX.Element, () => void]
 
-    // Just some sample code from https://material-ui.com/components/drawers/.
+function makeListItems(elements: MenuElement[]) {
+    return elements.map(([text, icon, onClick]) => (
+        <ListItem button key={text} onClick={onClick}>
+            <ListItemIcon>{icon}</ListItemIcon>
+            <ListItemText primary={text} />
+        </ListItem>
+    ))
+}
+
+function Menu({ open, onClose, onTagProducts }: {
+    open: boolean,
+    onClose: () => void,
+    onTagProducts: () => void
+}) {
+
+    const mainElements: MenuElement[] = [
+        ["Tag products", <CheckIcon />, onTagProducts],
+        ["Scan barcode", <CropFreeIcon />, () => { }]
+    ]
+
+    const infoElements: MenuElement[] = [
+        ["FAQ", <HelpIcon />, () => { }],
+        ["About", <InfoIcon />, () => { }]
+    ]
+
     const list = () => (
         <div
             role="presentation"
         >
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                        <ListItemText primary={text} />
-                    </ListItem>
-                ))}
+                {makeListItems(mainElements)}
             </List>
             <Divider />
             <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                        <ListItemText primary={text} />
-                    </ListItem>
-                ))}
+                {makeListItems(infoElements)}
             </List>
         </div>
     );

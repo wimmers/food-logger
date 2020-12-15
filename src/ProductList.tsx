@@ -1,3 +1,5 @@
+import IconButton from '@material-ui/core/IconButton';
+import CheckIcon from '@material-ui/icons/Check';
 import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
@@ -9,10 +11,12 @@ type ProductCardProps = {
     product: product;
     onClick: () => void;
     selected: boolean;
+    tagging: boolean;
+    onTag: () => void;
 };
 
 function ProductCard(
-    { product, onClick, selected }: ProductCardProps
+    { product, onClick, selected, tagging, onTag }: ProductCardProps
 ) {
     return (
         <Card
@@ -27,9 +31,21 @@ function ProductCard(
                 <Card.Body className="pt-1">
                     <Card.Text className="mb-1">{product.name}</Card.Text>
                     <Card.Text className="text-muted list-brand-text">{product.brands}</Card.Text>
+                    {tagging ?
+                        <IconButton
+                            onClick={e => {
+                                e.stopPropagation()
+                                onTag()
+                            }}
+                            style={{ position: 'absolute', right: 0, bottom: 0 }}
+                        >
+                            <CheckIcon fontSize="inherit" />
+                        </IconButton> :
+                        null
+                    }
                 </Card.Body>
             </div>
-        </Card>
+        </Card >
     )
 }
 
@@ -42,11 +58,21 @@ type ProductListProps = {
     selectedProduct?: number;
     searchInputState: string[];
     onChangeSearchState: (values: string[], state: SearchState) => void;
+    tagging: boolean,
+    onTag: (index: number) => void
 };
 
 function ProductList(
-    { categories, products, onSelectProduct, selectedProduct,
-        searchInputState, onChangeSearchState }: ProductListProps
+    {
+        categories,
+        products,
+        onSelectProduct,
+        selectedProduct,
+        searchInputState,
+        onChangeSearchState,
+        tagging,
+        onTag
+    }: ProductListProps
 ) {
 
     const productList = (ids: number[]) => {
@@ -58,6 +84,8 @@ function ProductList(
                     onClick={() => { onSelectProduct(id) }}
                     selected={selectedProduct === id}
                     key={id}
+                    tagging={tagging}
+                    onTag={() => onTag(id)}
                 />
             )
         })

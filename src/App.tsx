@@ -12,6 +12,11 @@ import { Map } from 'leaflet';
 import { useFetch, products_categories } from './FetchData'
 import { filterProductsUrl, filterShopsUrl } from './Config';
 import { SearchState, emptySearchState } from './ProductSearch';
+import { useToggle } from './Util'
+import { SnackbarProvider, useSnackbar } from 'notistack';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
 
 function App() {
 
@@ -19,9 +24,10 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState<number | undefined>(undefined)
   const [supermarkets, setSupermarkets] = useState<OSMSupermarket[] | null>(null)
   const [selectedMarkets, setSelectedMarkets] = useState<number[]>([])
-  const [menuVisible, setMenuVisible] = useState(false)
+  const [menuVisible, toggleMenuVisible] = useToggle(false)
   const [searchInputState, setSearchInputState] = useState<string[]>([])
   const [searchState, setSearchState] = useState<SearchState>(emptySearchState)
+  const [tagging, toggleTagging] = useToggle(false)
 
   const setData = (data: products_categories) => {
     setProducts(data.products)
@@ -34,6 +40,21 @@ function App() {
   }
 
   const [loading, data] = useFetch(setData)
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const onTagProducts = () => {
+    if (supermarkets === null || supermarkets.length !== 1) {
+      enqueueSnackbar("Please select a shop first!")
+    }
+    else {
+      if (!tagging) {
+        enqueueSnackbar(<span>Press <CheckIcon /> to mark a product as available</span>)
+      }
+      toggleTagging();
+    }
+    toggleMenuVisible();
+  }
 
   async function filterProductsByMarkets(markets: OSMSupermarket[]) {
     const ids = Object.keys(products)
@@ -108,8 +129,8 @@ function App() {
   const filteredProducts = productIndices.reduce(
     (acc: ProductDict, index: number) => {
       const product = products[index]
-      const isInProducts = searchState.products.length == 0 || searchState.products.includes(product.name)
-      const isInBrands = searchState.brands.length == 0 || searchState.brands.includes(product.brands)
+      const isInProducts = searchState.products.length === 0 || searchState.products.includes(product.name)
+      const isInBrands = searchState.brands.length === 0 || searchState.brands.includes(product.brands)
       if (isInProducts && isInBrands) {
         acc[index] = product
       }
@@ -118,13 +139,17 @@ function App() {
     {}
   )
   const filteredCategories =
-    searchState.categories.length == 0 ?
+    searchState.categories.length === 0 ?
       data.categories :
       data.categories.filter(category => searchState.categories.includes(category.name))
 
   return (
     <>
-      <Menu open={menuVisible} onClose={() => setMenuVisible(false)} />
+      <Menu
+        open={menuVisible}
+        onClose={toggleMenuVisible}
+        onTagProducts={onTagProducts}
+      />
       <Container fluid style={{ height: vh }}>
         <Split
           onDrag={onDrag}
@@ -135,7 +160,7 @@ function App() {
         >
           <MapView
             onUpdateMarkets={updateMarkets}
-            onOpenMenu={() => setMenuVisible(true)}
+            onOpenMenu={() => toggleMenuVisible()}
             supermarkets={supermarkets}
             selectedMarkets={selectedMarkets}
             setMap={(map: Map) => mapRef.current = map}
@@ -143,7 +168,10 @@ function App() {
           {selectedProduct ?
             <ProductDetail
               onBack={() => setSelectedProduct(undefined)}
+              onConfirm={() => console.log('Confirmed product')}
+              onUnconfirm={() => console.log('Unconfirmed product')}
               product={products[selectedProduct]}
+              showConfirm={supermarkets !== null && supermarkets.length === 1}
             /> :
             <ProductList
               products={filteredProducts}
@@ -152,6 +180,8 @@ function App() {
               onSelectProduct={updateSelected}
               searchInputState={searchInputState}
               onChangeSearchState={onChangeSearchState}
+              tagging={tagging}
+              onTag={id => console.log(`Tagged: ${id}`)}
             />}
         </Split>
       </Container >
@@ -159,4 +189,22 @@ function App() {
   );
 }
 
-export default App;
+export default function IntegrationNotistack() {
+  const notistackRef: any = React.createRef();
+  const onClickDismiss = (key: React.ReactText) => () => {
+    notistackRef.current.closeSnackbar(key);
+  }
+  return (
+    <SnackbarProvider
+      maxSnack={3}
+      ref={notistackRef}
+      action={(key) => (
+        <IconButton size="small" aria-label="close" color="inherit" onClick={onClickDismiss(key)}>
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      )}
+    >
+      <App />
+    </SnackbarProvider>
+  );
+}
