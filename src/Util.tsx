@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 
-// This code is from https://www.robinwieruch.de/react-function-component
+// This code is from:
+// https://css-tricks.com/dealing-with-stale-props-and-states-in-reacts-functional-components/
 export function useAsyncReference<T>(value: T):
     [React.MutableRefObject<T>, (newState: T) => void] {
     const ref = useRef(value);
