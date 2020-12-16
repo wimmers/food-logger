@@ -1,21 +1,4 @@
-import React, { useRef, useState } from "react";
-
-// This code is from:
-// https://css-tricks.com/dealing-with-stale-props-and-states-in-reacts-functional-components/
-export function useAsyncReference<T>(value: T):
-    [React.MutableRefObject<T>, (newState: T) => void] {
-    const ref = useRef(value);
-    const [, forceRender] = useState(false);
-
-    function updateState(newState: T) {
-        if (!Object.is(ref.current, newState)) {
-            ref.current = newState;
-            forceRender(s => !s);
-        }
-    }
-
-    return [ref, updateState];
-}
+import React from "react";
 
 // From https://dev.to/alexkhismatulin/update-boolean-state-right-with-react-hooks-3k2i
 export const useToggle = (initialState: boolean): [boolean, (() => void)] => {
