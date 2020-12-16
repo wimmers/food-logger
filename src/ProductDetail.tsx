@@ -40,7 +40,7 @@ export default function ProductDetail(
                         <IconButton onClick={onUnconfirm} className="pl-0">
                             <ThumbDownIcon fontSize="inherit" />
                         </IconButton>
-                    Did you found this product?
+                    Did you find this product?
                     <IconButton onClick={onConfirm}>
                             <ThumbUpIcon fontSize="inherit" />
                         </IconButton>
