@@ -9,10 +9,11 @@ import { ProductDict } from './Product';
 import { OSMSupermarket } from './OSMData';
 import Split from './Split';
 import { Map } from 'leaflet';
-import { useFetch, products_categories } from './FetchData'
+import { useFetch, products_categories } from './FetchData';
 import { filterProductsUrl, filterShopsUrl } from './Config';
+import { sendAddProduct, sendConfirmProduct, sendUnconfirmProduct } from './Endpoints';
 import { SearchState, emptySearchState } from './ProductSearch';
-import { useToggle } from './Util'
+import { useToggle } from './Util';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
@@ -43,6 +44,30 @@ function App() {
   const [loading, data] = useFetch(setData)
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const onConfirmProduct = () => {
+    if (!supermarkets || supermarkets.length !== 1 || !selectedProduct) {
+      // should not be reached
+      return
+    }
+    sendConfirmProduct(selectedProduct, supermarkets[0].id)
+  }
+
+  const onUnconfirmProduct = () => {
+    if (!supermarkets || supermarkets.length !== 1 || !selectedProduct) {
+      // should not be reached
+      return
+    }
+    sendUnconfirmProduct(selectedProduct, supermarkets[0].id)
+  }
+
+  const onTagProduct = (id: number) => {
+    if (!supermarkets || supermarkets.length !== 1) {
+      // should not be reached
+      return
+    }
+    sendAddProduct(id, supermarkets[0].id)
+  }
 
   const onTagProducts = () => {
     if (supermarkets === null || supermarkets.length !== 1) {
@@ -164,8 +189,8 @@ function App() {
           {selectedProduct ?
             <ProductDetail
               onBack={() => setSelectedProduct(undefined)}
-              onConfirm={() => console.log('Confirmed product')}
-              onUnconfirm={() => console.log('Unconfirmed product')}
+              onConfirm={onConfirmProduct}
+              onUnconfirm={onUnconfirmProduct}
               product={products[selectedProduct]}
               showConfirm={supermarkets !== null && supermarkets.length === 1}
             /> :
@@ -177,7 +202,7 @@ function App() {
               searchInputState={searchInputState}
               onChangeSearchState={onChangeSearchState}
               tagging={tagging}
-              onTag={id => console.log(`Tagged: ${id}`)}
+              onTag={onTagProduct}
             />}
         </Split>
       </Container >
