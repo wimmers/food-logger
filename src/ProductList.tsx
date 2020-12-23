@@ -4,7 +4,8 @@ import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import { category, product } from './Product';
-import ProductSearch, { SearchState } from './ProductSearch'
+import ProductSearch, { SearchState } from './ProductSearch';
+import { useToggle } from './Util';
 import './ProductView.css';
 
 type ProductCardProps = {
@@ -18,10 +19,12 @@ type ProductCardProps = {
 function ProductCard(
     { product, onClick, available, tagging, onTag }: ProductCardProps
 ) {
+    const [tagged, toggleTagged] = useToggle(false)
+
     return (
         <Card
             onClick={onClick}
-            bg={available ? undefined: 'light'}
+            bg={available ? undefined : 'light'}
         >
             <div className="card-horizontal">
                 {product.image ?
@@ -30,13 +33,17 @@ function ProductCard(
                 <Card.Body className="pt-1">
                     <Card.Text className="mb-1">{product.name}</Card.Text>
                     <Card.Text className="text-muted list-brand-text">{product.brands}</Card.Text>
-                    {tagging ?
+                    {tagging && !available ?
                         <IconButton
                             onClick={e => {
                                 e.stopPropagation()
-                                onTag()
+                                if (!tagged) {
+                                    toggleTagged()
+                                    onTag()
+                                }
                             }}
                             style={{ position: 'absolute', right: 0, bottom: 0 }}
+                            color={tagged ? 'primary' : 'default'}
                         >
                             <CheckIcon fontSize="inherit" />
                         </IconButton> :
