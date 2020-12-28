@@ -1,11 +1,15 @@
 import IconButton from '@material-ui/core/IconButton';
 import CheckIcon from '@material-ui/icons/Check';
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import { category, product } from './Product';
 import ProductSearch, { SearchState } from './ProductSearch';
 import { useToggle } from './Util';
+import Button from 'react-bootstrap/Button';
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
+import AccordionContext from 'react-bootstrap/AccordionContext';
+import { incNumCategories, incNumProducts, initNumCategories, initNumProducts } from './Config';
 import './ProductView.css';
 
 type ProductCardProps = {
@@ -68,6 +72,23 @@ type ProductListProps = {
     onTag: (index: number) => void
 };
 
+// Adopted from https://react-bootstrap.github.io/components/accordion/
+function ContextAwareToggle({ children, eventKey, callback }:
+    { children: any, eventKey: string, callback: (isOpen: boolean) => void }) {
+    const currentEventKey = useContext(AccordionContext);
+
+    const decoratedOnClick = useAccordionToggle(
+        eventKey,
+        () => callback(currentEventKey !== eventKey),
+    );
+
+    return (
+        <Card.Header onClick={decoratedOnClick}>
+            {children}
+        </Card.Header>
+    );
+}
+
 function ProductList(
     {
         categories,
@@ -80,6 +101,13 @@ function ProductList(
         onTag
     }: ProductListProps
 ) {
+
+    const [numCategories, setNumCategories] = useState(initNumCategories)
+    const [numProducts, setNumProducts] = useState(initNumProducts)
+
+    const onLoadMoreCategories = () => setNumCategories(x => x + incNumCategories)
+    const onLoadMoreProducts = () => setNumProducts(x => x + incNumProducts)
+    const onAccordionChange = (isOpen: boolean) => setNumProducts(initNumProducts)
 
     const productList = (ids: number[]) => {
         return ids.map((id) => {
@@ -108,14 +136,23 @@ function ProductList(
         }
         return (
             <Card key={index} className="w-100">
-                <Accordion.Toggle as={Card.Header} eventKey={index.toString()}>
+                <ContextAwareToggle eventKey={index.toString()} callback={onAccordionChange}>
                     {category.name}
-                </Accordion.Toggle>
+                </ContextAwareToggle>
                 <Accordion.Collapse eventKey={index.toString()}>
                     <Card.Body>
                         <div className="card-columns">
-                            {products}
+                            {products.slice(0, numProducts)}
                         </div>
+                        {products.length > numProducts ?
+                            <Button
+                                variant='outline-primary'
+                                className='center-horizontal'
+                                onClick={onLoadMoreProducts}>
+                                Load more
+                                </Button> :
+                            null
+                        }
                     </Card.Body>
                 </Accordion.Collapse>
             </Card>
@@ -148,8 +185,18 @@ function ProductList(
                 value={searchInputState}
             />
             <Accordion defaultActiveKey="0">
-                {categoryComponents}
+                {categoryComponents.slice(0, numCategories)}
             </Accordion>
+            {categoryComponents.length > numCategories ?
+                <Button
+                    variant='outline-primary'
+                    className='center-horizontal my-2'
+                    onClick={onLoadMoreCategories}
+                >
+                    Load more
+                </Button> :
+                null
+            }
         </>
     )
 }

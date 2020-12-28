@@ -17,3 +17,9 @@
 .list-brand-text {
     font-size: 80%;
 }
+
+.center-horizontal {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
