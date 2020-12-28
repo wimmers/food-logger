@@ -197,6 +197,7 @@ function App() {
             <ProductList
               products={filteredProducts}
               categories={filteredCategories}
+              brands={data.brands}
               availableProductIds={new Set(availableProductIds)}
               onSelectProduct={updateSelected}
               searchInputState={searchInputState}

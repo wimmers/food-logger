@@ -64,6 +64,7 @@ type ProductListProps = {
     products: {
         [index: number]: product;
     };
+    brands: string[];
     availableProductIds: Set<number>;
     onSelectProduct: (_: number) => void;
     searchInputState: string[];
@@ -93,6 +94,7 @@ function ProductList(
     {
         categories,
         products,
+        brands,
         availableProductIds,
         onSelectProduct,
         searchInputState,
@@ -163,10 +165,6 @@ function ProductList(
     const productNames = Object.keys(products).map(
         (key: string) => products[Number(key)].name
     )
-
-    const brands = Array.from(new Set(
-        Object.keys(products).map(index => products[Number(index)].brands)
-    ))
 
     const codes = Object.keys(products).map(
         (key: string) => products[Number(key)].code
