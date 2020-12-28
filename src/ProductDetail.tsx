@@ -48,7 +48,10 @@ export default function ProductDetail(
                     null
                 }
                 < Card.Text className="text-muted">
-                    Data provided by <a href={offPage}>Open Food Facts</a>.
+                    Data provided by{' '}
+                    <a href={offPage} target="_blank" rel="noopener noreferrer">
+                        Open Food Facts
+                    </a>.
                 </Card.Text>
             </Card.Body>
         </Card >
