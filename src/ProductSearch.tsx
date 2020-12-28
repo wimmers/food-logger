@@ -1,6 +1,6 @@
 import React from 'react';
 import Chip from '@material-ui/core/Chip';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -37,12 +37,14 @@ const convertValues = (marker: string, values: string[]) => {
     return result
 }
 
+const filterOptions = createFilterOptions({ limit: 20, stringify: (x: string) => x })
+
 function ProductSearch(
     { defaultValue, value, onChange }:
         {
             defaultValue: SearchState,
             value: string[],
-            onChange: (values: string[], state: SearchState) => void,
+            onChange: (values: string[], state: SearchState) => void
         }
 ) {
 
@@ -75,6 +77,7 @@ function ProductSearch(
                     <Chip variant="outlined" label={option} {...getTagProps({ index })} />
                 ))
             }
+            filterOptions={filterOptions}
             onChange={(_event, newValue) => handleChange(newValue)}
             renderInput={(params) => (
                 <TextField
