@@ -19,6 +19,9 @@ export const emptySearchState: SearchState = {
 
 const reCode = /[0-9]+/
 
+const markers = ['Brand', 'Category'].map(marker => `${marker}: `)
+const reMarkers = RegExp(markers.join('|'))
+
 const stateToSuggestions = ({ categories, brands, products, codes }: SearchState) => {
     const empty: string[] = []
     const suggestions = empty.concat(
@@ -39,6 +42,7 @@ const convertValues = (marker: string, values: string[]) => {
 
 const filterOptions = createFilterOptions({ limit: 20, stringify: (x: string) => x })
 
+
 function ProductSearch(
     { defaultValue, value, onChange }:
         {
@@ -51,10 +55,7 @@ function ProductSearch(
     const handleChange = (values: string[]) => {
         const brands = convertValues('Brand', values)
         const categories = convertValues('Category', values)
-        const markers = ['Brand', 'Category'].map(marker => `${marker}: `)
-        const regexString = markers.join('|')
-        const regex = RegExp(regexString)
-        const products = values.filter(s => !s.match(regex) && !s.match(reCode))
+        const products = values.filter(s => !s.match(reMarkers) && !s.match(reCode))
         const codes = values.filter(s => s.match(reCode)).map(s => +s)
         const newState = {
             brands,
