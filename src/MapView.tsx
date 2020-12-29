@@ -69,6 +69,7 @@ const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius?: number) => v
     }
 
     const t = useTranslation('map').t
+    const tt = useTranslation('common').t
 
     return (
         <OpenPopupMarker position={pos} icon={goldMarker} >
@@ -86,7 +87,7 @@ const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius?: number) => v
                             aria-hidden="true"
                             className="mr-2"
                         />
-                        Loading..
+                        {tt('Loading...')}
                     </Button>) :
                     (<SplitButton
                         id="radius-button"
@@ -216,6 +217,7 @@ function MapView({
                                     variant="outline-secondary"
                                     onClick={tagging ? _ => onStopTagging() : _ => onStartTagging(market)}
                                     className="mt-2"
+                                    style={{ display: "block" }}
                                 >
                                     {tagging ? tt('Stop tagging') : tt('Tag products')}
                                 </Button>
