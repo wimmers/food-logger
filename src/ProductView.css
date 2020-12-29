@@ -23,3 +23,9 @@
     margin-left: auto !important;
     margin-right: auto !important;
 }
+
+.marked-icon {
+    margin: 4px !important;
+    padding: 8px !important;
+    background-color: rgba(40, 167, 69, 0.3) !important;
+}

@@ -1,3 +1,4 @@
+import './ProductView.css';
 import IconButton from '@material-ui/core/IconButton';
 import CheckIcon from '@material-ui/icons/Check';
 import React, { useContext, useState } from 'react';
@@ -10,7 +11,6 @@ import Button from 'react-bootstrap/Button';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { incNumCategories, incNumProducts, initNumCategories, initNumProducts } from './Config';
-import './ProductView.css';
 import { useTranslation } from 'react-i18next';
 
 type ProductCardProps = {
@@ -29,7 +29,7 @@ function ProductCard(
     return (
         <Card
             onClick={onClick}
-            bg={available ? undefined : 'light'}
+            bg={tagged ? undefined : available ? undefined : 'light'}
         >
             <div className="card-horizontal">
                 {product.image ?
@@ -48,7 +48,8 @@ function ProductCard(
                                 }
                             }}
                             style={{ position: 'absolute', right: 0, bottom: 0 }}
-                            color={tagged ? 'primary' : 'default'}
+                            className={tagged ? "marked-icon" : undefined}
+                            color={'default'}
                         >
                             <CheckIcon fontSize="inherit" />
                         </IconButton> :
