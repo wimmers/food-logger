@@ -4,24 +4,24 @@ import { category, ProductDict } from "./Product";
 
 interface incoming_product {
     id: number;
-    url: string;
+    // url: string;
     code: number;
     product_name: string;
     generic_name: string;
     brands: string;
-    categories: string;
-    categories_tags: string;
+    // categories: string;
+    // categories_tags: string;
     stores: string;
-    allergens: string;
+    // allergens: string;
     nutriscore_grade: string;
-    image_url: string;
+    // image_url: string;
     image_small_url: string;
-    image_front_url: string;
-    image_front_small_url: string;
-    image_ingredients_url: string;
-    image_ingredients_small_url: string;
-    image_nutrition_url: string;
-    image_nutrition_small_url: string;
+    // image_front_url: string;
+    // image_front_small_url: string;
+    // image_ingredients_url: string;
+    // image_ingredients_small_url: string;
+    // image_nutrition_url: string;
+    // image_nutrition_small_url: string;
 }
 
 type incoming = {
