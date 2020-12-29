@@ -29,7 +29,7 @@ function ProductCard(
     return (
         <Card
             onClick={onClick}
-            bg={tagged ? undefined : available ? undefined : 'light'}
+            bg={tagged || available ? undefined : 'light'}
         >
             <div className="card-horizontal">
                 {product.image ?
