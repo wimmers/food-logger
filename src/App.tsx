@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
+import React, { useEffect, useRef, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Menu from './Menu';
 import MapView from './MapView';
@@ -18,7 +18,9 @@ import { SnackbarProvider, useSnackbar } from 'notistack';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
+import Spinner from 'react-bootstrap/Spinner';
 import { useI18N } from './i18n';
+import { useTranslation } from 'react-i18next';
 
 function App() {
 
@@ -177,9 +179,21 @@ function App() {
       data.categories :
       data.categories.filter(category => searchState.categories.includes(category.name))
 
+  const tt = useTranslation('common', { useSuspense: false }).t
+
   return (
     loadingData || loadingI18N ?
-      <div>Loading...</div> :
+      <div style={{ margin: 'auto', display: 'table' }} className="my-3">
+        <Spinner
+          as="span"
+          animation="border"
+          size="sm"
+          role="status"
+          aria-hidden="true"
+          className="mr-2"
+        />
+        {loadingI18N ? 'Loading...' : tt('Loading...')}
+      </div > :
       <>
         <Menu
           open={menuVisible}
