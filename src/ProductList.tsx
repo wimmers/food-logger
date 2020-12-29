@@ -64,7 +64,9 @@ type ProductListProps = {
     products: {
         [index: number]: product;
     };
-    brands: string[];
+    brands: {
+        [index: string]: number[]
+    };
     availableProductIds: Set<number>;
     onSelectProduct: (_: number) => void;
     searchInputState: string[];
@@ -174,7 +176,7 @@ function ProductList(
         <>
             <ProductSearch
                 defaultValue={{
-                    brands,
+                    brands: Object.keys(brands),
                     categories: categories.map(category => category.name),
                     products: productNames,
                     codes

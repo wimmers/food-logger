@@ -149,7 +149,8 @@ function App() {
     (acc: ProductDict, index: number) => {
       const product = products[index]
       const isInProducts = !searchState.products.length || searchState.products.includes(product.name)
-      const isInBrands = !searchState.brands.length || searchState.brands.includes(product.brands)
+      const isInBrands = !searchState.brands.length ||
+        searchState.brands.some(brand => data.brands[brand].includes(index))
       const isInCodes = !searchState.codes.length || searchState.codes.includes(product.code)
       if (isInProducts && isInBrands && isInCodes) {
         acc[index] = product

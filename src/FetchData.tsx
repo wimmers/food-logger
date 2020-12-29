@@ -27,13 +27,13 @@ interface incoming_product {
 type incoming = {
     categories: category[],
     products: incoming_product[],
-    brands: string[]
+    brands: category[]
 }
 
 export type products_categories = {
     products: ProductDict;
     categories: category[];
-    brands: string[];
+    brands: { [index: string]: number[] };
 }
 
 async function fetchProducts() {
@@ -52,7 +52,12 @@ async function fetchProducts() {
             return dict
         }, {})
     const categories: category[] = data.categories
-    return { products, categories, brands: data.brands }
+    const brands = data.brands.reduce(
+        (dict: { [index: string]: number[] }, brand) => {
+            dict[brand.name] = brand.products
+            return dict
+        }, {})
+    return { products, categories, brands }
 }
 
 /*
@@ -65,7 +70,7 @@ async function fetchProducts() {
 function useFetch(onData: (data: products_categories) => void): [boolean, products_categories] {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<products_categories>(
-        { products: {}, categories: [], brands: [] }
+        { products: {}, categories: [], brands: {} }
     );
     async function fetchUrl() {
         const data = await fetchProducts()
