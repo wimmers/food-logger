@@ -71,17 +71,20 @@ function App() {
     sendAddProduct(id, supermarkets[0].id)
   }
 
-  const onTagProducts = () => {
+  const taggingSnackBar = <span>Press <CheckIcon /> to mark a product as available</span>
+
+  const onTagProducts = (isMenu: boolean) => () => {
     if (supermarkets === null || supermarkets.length !== 1) {
       enqueueSnackbar("Please select a shop first!")
     }
     else {
       if (!tagging) {
-        enqueueSnackbar(<span>Press <CheckIcon /> to mark a product as available</span>)
+        enqueueSnackbar(taggingSnackBar)
       }
       toggleTagging();
     }
-    toggleMenuVisible();
+    if (isMenu)
+      toggleMenuVisible();
   }
 
   async function filterProductsByMarkets(markets: OSMSupermarket[]) {
@@ -101,6 +104,14 @@ function App() {
   const updateMarkets = (markets: OSMSupermarket[]) => {
     setSupermarkets(markets)
     filterProductsByMarkets(markets)
+  }
+
+  const onStartTagging = (market: OSMSupermarket) => {
+    if (!tagging) {
+      updateMarkets([market])
+      toggleTagging()
+      enqueueSnackbar(taggingSnackBar)
+    }
   }
 
   const updateSelected = (id: number) => {
@@ -173,7 +184,8 @@ function App() {
         <Menu
           open={menuVisible}
           onClose={toggleMenuVisible}
-          onTagProducts={onTagProducts}
+          onTagProducts={onTagProducts(true)}
+          tagging={tagging}
         />
         <Container fluid style={{ height: vh }}>
           <Split
@@ -186,6 +198,9 @@ function App() {
           >
             <MapView
               onUpdateMarkets={updateMarkets}
+              onStartTagging={onStartTagging}
+              onStopTagging={onTagProducts(false)}
+              tagging={tagging}
               onOpenMenu={() => toggleMenuVisible()}
               supermarkets={supermarkets}
               selectedMarkets={selectedMarkets}

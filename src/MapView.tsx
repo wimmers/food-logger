@@ -111,8 +111,15 @@ const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius?: number) => v
     )
 }
 
-function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, setMap }:
+function MapView({
+    onStartTagging, onStopTagging, tagging,
+    onUpdateMarkets, onOpenMenu,
+    supermarkets, selectedMarkets, setMap
+}:
     {
+        onStartTagging: (supermarket: OSMSupermarket) => void,
+        onStopTagging: () => void,
+        tagging: boolean,
         onUpdateMarkets: callbackType,
         onOpenMenu: () => void,
         supermarkets: OSMSupermarket[] | null,
@@ -123,8 +130,8 @@ function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, s
     const [homePosition, setHomePosition] = useState<LatLng | null>(null)
     const [map, updMap] = useState<Map | undefined>(undefined)
 
-    const updateMarkets = (supermarkets: OSMSupermarket[]) => {
-        onUpdateMarkets(supermarkets)
+    const onFindProducts = (supermarkets: OSMSupermarket) => {
+        onUpdateMarkets([supermarkets])
     }
 
     const queryMarkets = (radius?: number) => {
@@ -148,7 +155,7 @@ function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, s
                 out;
         `;
         queryOverpass(query, { fetchMode: 'cors' })
-            .then(updateMarkets)
+            .then(onUpdateMarkets)
             .then(() => setHomePosition(null))
             .catch(console.error)
     }
@@ -202,8 +209,15 @@ function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, s
                                 </Card.Title>
                                 {data.brand ? (<Card.Text>{`${tt('Brand')}: ${data.brand}`}</Card.Text>) : null}
                                 {data["addr:street"] !== undefined ? (<Card.Text>{address} </Card.Text>) : null}
-                                <Button variant="outline-primary" onClick={_ => updateMarkets([market])}>
+                                <Button variant="outline-primary" onClick={_ => onFindProducts(market)}>
                                     {t('Find products')}
+                                </Button>
+                                <Button
+                                    variant="outline-secondary"
+                                    onClick={tagging ? _ => onStopTagging() : _ => onStartTagging(market)}
+                                    className="mt-2"
+                                >
+                                    {tagging ? tt('Stop tagging') : tt('Tag products')}
                                 </Button>
                             </Card.Body>
                         </Card>
