@@ -181,6 +181,11 @@ function App() {
 
   const tt = useTranslation('common', { useSuspense: false }).t
 
+  useEffect(() => {
+    if (!loadingI18N)
+      enqueueSnackbar(tt("Click anywhere on the map to find shops!"), { autoHideDuration: 50000 })
+  }, [loadingI18N])
+
   return (
     loadingData || loadingI18N ?
       <div style={{ margin: 'auto', display: 'table' }} className="my-3">
