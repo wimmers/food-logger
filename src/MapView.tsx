@@ -12,6 +12,7 @@ import SearchControl from './GeoSearchControl';
 import MapMenuButton from './MapMenuButton';
 import './MapView.css';
 import L from 'leaflet';
+import { useTranslation } from 'react-i18next';
 const queryOverpass = require('@derhuerst/query-overpass')
 
 const initialCenter: LatLngTuple = [48.1351, 11.5820]
@@ -67,6 +68,8 @@ const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius?: number) => v
         query(radius)
     }
 
+    const t = useTranslation('map').t
+
     return (
         <OpenPopupMarker position={pos} icon={goldMarker} >
             <Popup>
@@ -86,9 +89,9 @@ const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius?: number) => v
                         Loading..
                     </Button>) :
                     (<SplitButton
-                        id='test'
+                        id="radius-button"
                         variant="outline-primary"
-                        title={'Find shops'}
+                        title={t('Find shops')}
                         onClick={() => doQuery(undefined)}
                         disabled={loading}
                     >
@@ -98,7 +101,7 @@ const HomeMarker = ({ pos, query }: { pos: LatLng, query: (radius?: number) => v
                                     eventKey={radius.toString()}
                                     onClick={() => doQuery(radius)}
                                 >
-                                    {`Radius: ${radius} km`}
+                                    {`${t('Radius')}: ${radius} km`}
                                 </Dropdown.Item>)
                         })}
                         <Dropdown.Divider />
@@ -173,6 +176,9 @@ function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, s
         flyHome(L.latLng(e.location.y, e.location.x))
     }
 
+    const t = useTranslation('map').t
+    const tt = useTranslation('common').t
+
     const getMarkets = () => {
         if (supermarkets === null) return null
 
@@ -192,12 +198,12 @@ function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, s
                         <Card>
                             <Card.Body>
                                 <Card.Title>
-                                    {data.name ? data.name : 'Unknown'}
+                                    {data.name ? data.name : t('Unknown')}
                                 </Card.Title>
-                                {data.brand ? (<Card.Text>{'Brand: ' + data.brand}</Card.Text>) : null}
+                                {data.brand ? (<Card.Text>{`${tt('Brand')}: ${data.brand}`}</Card.Text>) : null}
                                 {data["addr:street"] !== undefined ? (<Card.Text>{address} </Card.Text>) : null}
                                 <Button variant="outline-primary" onClick={_ => updateMarkets([market])}>
-                                    Find products!
+                                    {t('Find products')}
                                 </Button>
                             </Card.Body>
                         </Card>
@@ -229,7 +235,7 @@ function MapView({ onUpdateMarkets, onOpenMenu, supermarkets, selectedMarkets, s
                 <MapMenuButton onClick={() => onOpenMenu()} />
                 <SearchControl style={"bar"} showMarker={false} showPopup={false}
                     retainZoomLevel={true} autoClose={true}
-                    searchLabel={'Enter address'} keepResult={true} />
+                    searchLabel={t('Enter address')} keepResult={true} />
                 <LocateControl keepCurrentZoomLevel={true} drawMarker={false} />
                 {homePosition ? <HomeMarker pos={homePosition} query={queryMarkets} /> : null}
                 {getMarkets()}

@@ -18,6 +18,7 @@ import { SnackbarProvider, useSnackbar } from 'notistack';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
+import { useI18N } from './i18n';
 
 function App() {
 
@@ -41,7 +42,8 @@ function App() {
     setSearchState(state)
   }
 
-  const [loading, data] = useFetch(setData)
+  const [loadingData, data] = useFetch(setData)
+  const loadingI18N = useI18N()
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -165,50 +167,52 @@ function App() {
       data.categories.filter(category => searchState.categories.includes(category.name))
 
   return (
-    <>
-      <Menu
-        open={menuVisible}
-        onClose={toggleMenuVisible}
-        onTagProducts={onTagProducts}
-      />
-      <Container fluid style={{ height: vh }}>
-        <Split
-          onDrag={onDrag}
-          direction={horizontal ? 'horizontal' : 'vertical'}
-          gutterSize={20}
-          totalSize={horizontal ? vw : vh}
-          minSize={0}
-          collapsed={supermarkets !== null && supermarkets.length === 1}
-        >
-          <MapView
-            onUpdateMarkets={updateMarkets}
-            onOpenMenu={() => toggleMenuVisible()}
-            supermarkets={supermarkets}
-            selectedMarkets={selectedMarkets}
-            setMap={(map: Map) => mapRef.current = map}
-          />
-          {selectedProduct ?
-            <ProductDetail
-              onBack={() => setSelectedProduct(undefined)}
-              onConfirm={onConfirmProduct}
-              onUnconfirm={onUnconfirmProduct}
-              product={products[selectedProduct]}
-              showConfirm={supermarkets !== null && supermarkets.length === 1}
-            /> :
-            <ProductList
-              products={filteredProducts}
-              categories={filteredCategories}
-              brands={data.brands}
-              availableProductIds={new Set(availableProductIds)}
-              onSelectProduct={updateSelected}
-              searchInputState={searchInputState}
-              onChangeSearchState={onChangeSearchState}
-              tagging={tagging}
-              onTag={onTagProduct}
-            />}
-        </Split>
-      </Container >
-    </>
+    loadingData || loadingI18N ?
+      <div>Loading...</div> :
+      <>
+        <Menu
+          open={menuVisible}
+          onClose={toggleMenuVisible}
+          onTagProducts={onTagProducts}
+        />
+        <Container fluid style={{ height: vh }}>
+          <Split
+            onDrag={onDrag}
+            direction={horizontal ? 'horizontal' : 'vertical'}
+            gutterSize={20}
+            totalSize={horizontal ? vw : vh}
+            minSize={0}
+            collapsed={supermarkets !== null && supermarkets.length === 1}
+          >
+            <MapView
+              onUpdateMarkets={updateMarkets}
+              onOpenMenu={() => toggleMenuVisible()}
+              supermarkets={supermarkets}
+              selectedMarkets={selectedMarkets}
+              setMap={(map: Map) => mapRef.current = map}
+            />
+            {selectedProduct ?
+              <ProductDetail
+                onBack={() => setSelectedProduct(undefined)}
+                onConfirm={onConfirmProduct}
+                onUnconfirm={onUnconfirmProduct}
+                product={products[selectedProduct]}
+                showConfirm={supermarkets !== null && supermarkets.length === 1}
+              /> :
+              <ProductList
+                products={filteredProducts}
+                categories={filteredCategories}
+                brands={data.brands}
+                availableProductIds={new Set(availableProductIds)}
+                onSelectProduct={updateSelected}
+                searchInputState={searchInputState}
+                onChangeSearchState={onChangeSearchState}
+                tagging={tagging}
+                onTag={onTagProduct}
+              />}
+          </Split>
+        </Container >
+      </>
   );
 }
 

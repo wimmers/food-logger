@@ -11,6 +11,7 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { incNumCategories, incNumProducts, initNumCategories, initNumProducts } from './Config';
 import './ProductView.css';
+import { useTranslation } from 'react-i18next';
 
 type ProductCardProps = {
     product: product;
@@ -113,6 +114,8 @@ function ProductList(
     const onLoadMoreProducts = () => setNumProducts(x => x + incNumProducts)
     const onAccordionChange = (isOpen: boolean) => setNumProducts(initNumProducts)
 
+    const t = useTranslation('products').t
+
     const productList = (ids: number[]) => {
         return ids.map((id) => {
             if (products[id] === undefined) return null
@@ -153,8 +156,8 @@ function ProductList(
                                 variant='outline-primary'
                                 className='center-horizontal'
                                 onClick={onLoadMoreProducts}>
-                                Load more
-                                </Button> :
+                                {t('Load more')}
+                            </Button> :
                             null
                         }
                     </Card.Body>
@@ -193,7 +196,7 @@ function ProductList(
                     className='center-horizontal my-2'
                     onClick={onLoadMoreCategories}
                 >
-                    Load more
+                    {t('Load more')}
                 </Button> :
                 null
             }

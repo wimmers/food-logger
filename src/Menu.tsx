@@ -9,6 +9,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import HelpIcon from '@material-ui/icons/Help';
 import CheckIcon from '@material-ui/icons/Check';
 import CropFreeIcon from '@material-ui/icons/CropFree';
+import { useTranslation } from 'react-i18next';
 import './Menu.css';
 
 type MenuElement = [string, JSX.Element, () => void]
@@ -28,14 +29,16 @@ function Menu({ open, onClose, onTagProducts }: {
     onTagProducts: () => void
 }) {
 
+    const t = useTranslation('menu').t
+
     const mainElements: MenuElement[] = [
-        ["Tag products", <CheckIcon />, onTagProducts],
-        ["Scan barcode", <CropFreeIcon />, () => { }]
+        [t("Tag products"), <CheckIcon />, onTagProducts],
+        [t("Scan barcode"), <CropFreeIcon />, () => { }]
     ]
 
     const infoElements: MenuElement[] = [
-        ["FAQ", <HelpIcon />, () => { }],
-        ["About", <InfoIcon />, () => { }]
+        [t("FAQ"), < HelpIcon />, () => { }],
+        [t("About"), <InfoIcon />, () => { }]
     ]
 
     const list = () => (

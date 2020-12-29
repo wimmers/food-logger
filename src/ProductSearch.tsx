@@ -3,6 +3,7 @@ import Chip from '@material-ui/core/Chip';
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
+import { useTranslation } from 'react-i18next';
 
 export type SearchState = {
     categories: string[],
@@ -15,22 +16,6 @@ export const emptySearchState: SearchState = {
     brands: [],
     products: [],
     codes: [],
-}
-
-const reCode = /[0-9]+/
-
-const markers = ['Brand', 'Category'].map(marker => `${marker}: `)
-const reMarkers = RegExp(markers.join('|'))
-
-const stateToSuggestions = ({ categories, brands, products, codes }: SearchState) => {
-    const empty: string[] = []
-    const suggestions = empty.concat(
-        categories.map(category => `Category: ${category}`),
-        brands.map(brand => `Brand: ${brand}`),
-        products,
-        codes.map(n => n.toString())
-    )
-    return suggestions
 }
 
 const convertValues = (marker: string, values: string[]) => {
@@ -52,9 +37,28 @@ function ProductSearch(
         }
 ) {
 
+    const t = useTranslation('products').t
+    const tt = useTranslation('common').t
+
+    const reCode = /[0-9]+/
+
+    const markers = ['Brand', 'Category'].map(marker => `${tt(marker)}: `)
+    const reMarkers = RegExp(markers.join('|'))
+
+    const stateToSuggestions = ({ categories, brands, products, codes }: SearchState) => {
+        const empty: string[] = []
+        const suggestions = empty.concat(
+            categories.map(category => `${tt('Category')}: ${category}`),
+            brands.map(brand => `${tt('Brand')}: ${brand}`),
+            products,
+            codes.map(n => n.toString())
+        )
+        return suggestions
+    }
+
     const handleChange = (values: string[]) => {
-        const brands = convertValues('Brand', values)
-        const categories = convertValues('Category', values)
+        const brands = convertValues(tt('Brand'), values)
+        const categories = convertValues(tt('Category'), values)
         const products = values.filter(s => !s.match(reMarkers) && !s.match(reCode))
         const codes = values.filter(s => s.match(reCode)).map(s => +s)
         const newState = {
@@ -84,8 +88,8 @@ function ProductSearch(
                 <TextField
                     {...params}
                     variant="filled"
-                    label={<span><SearchIcon /> Filter products</span>}
-                    placeholder="Products, categories, or brands"
+                    label={<span><SearchIcon />{t('Filter products')}</span>}
+                    placeholder={t('#search-hint')}
                 />
             )}
         />)
