@@ -1,9 +1,10 @@
-import { addProductUrl, confirmProductUrl, unconfirmProductUrl } from './Config'
+import { addProductUrl, removeProductUrl, confirmProductUrl, unconfirmProductUrl }
+    from './Config'
 
-const sendProduct = (url: string) => (id: number, node: number) => {
+const sendProduct = (url: string, method = 'POST') => (id: number, node: number) => {
     const data = { product: id, node }
     fetch(url, {
-        method: 'POST',
+        method,
         headers: {
             'Content-Type': 'application/json',
         },
@@ -15,6 +16,8 @@ const sendProduct = (url: string) => (id: number, node: number) => {
 }
 
 export const sendAddProduct = sendProduct(addProductUrl)
+
+export const sendRemoveProduct = sendProduct(removeProductUrl, 'DELETE')
 
 export const sendConfirmProduct = sendProduct(confirmProductUrl)
 

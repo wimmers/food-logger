@@ -20,10 +20,11 @@ type ProductCardProps = {
     tagged: boolean;
     tagging: boolean;
     onTag: () => void;
+    onUntag: () => void;
 };
 
 function ProductCard(
-    { product, onClick, available, tagged, tagging, onTag }: ProductCardProps
+    { product, onClick, available, tagged, tagging, onTag, onUntag }: ProductCardProps
 ) {
 
     return (
@@ -44,6 +45,9 @@ function ProductCard(
                                 e.stopPropagation()
                                 if (!tagged) {
                                     onTag()
+                                }
+                                else {
+                                    onUntag()
                                 }
                             }}
                             style={{ position: 'absolute', right: 0, bottom: 0 }}
@@ -74,6 +78,7 @@ type ProductListProps = {
     onChangeSearchState: (values: string[], state: SearchState) => void;
     tagging: boolean,
     onTag: (index: number) => void,
+    onUntag: (index: number) => void,
     visible: boolean
 };
 
@@ -105,6 +110,7 @@ function ProductList(
         onChangeSearchState,
         tagging,
         onTag,
+        onUntag,
         visible
     }: ProductListProps
 ) {
@@ -127,6 +133,14 @@ function ProductList(
         onTag(id)
     }
 
+    const untagProduct = (id: number) => {
+        taggedProducts.delete(id)
+        // This is to force an update in react.
+        // An immutable data structure would be probably be more apt.
+        setTaggedProducts(new Set(taggedProducts))
+        onUntag(id)
+    }
+
     const productList = (ids: number[]) => {
         return ids.map((id) => {
             if (products[id] === undefined) return null
@@ -143,6 +157,7 @@ function ProductList(
                     key={id}
                     tagging={tagging}
                     onTag={() => tagProduct(id)}
+                    onUntag={() => untagProduct(id)}
                 />
             )
         })

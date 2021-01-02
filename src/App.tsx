@@ -11,7 +11,8 @@ import Split from './Split';
 import { Map } from 'leaflet';
 import { useFetch, products_categories } from './FetchData';
 import { filterProductsUrl, filterShopsUrl } from './Config';
-import { sendAddProduct, sendConfirmProduct, sendUnconfirmProduct } from './Endpoints';
+import { sendAddProduct, sendRemoveProduct, sendConfirmProduct, sendUnconfirmProduct }
+  from './Endpoints';
 import { SearchState, emptySearchState } from './ProductSearch';
 import { useToggle } from './Util';
 import { SnackbarProvider, useSnackbar } from 'notistack';
@@ -71,6 +72,14 @@ function App() {
       return
     }
     sendAddProduct(id, supermarkets[0].id)
+  }
+
+  const onUntagProduct = (id: number) => {
+    if (!supermarkets || supermarkets.length !== 1) {
+      // should not be reached
+      return
+    }
+    sendRemoveProduct(id, supermarkets[0].id)
   }
 
   const taggingSnackBar = <span>Press <CheckIcon /> to mark a product as available</span>
@@ -246,6 +255,7 @@ function App() {
                 onChangeSearchState={onChangeSearchState}
                 tagging={tagging}
                 onTag={onTagProduct}
+                onUntag={onUntagProduct}
                 visible={selectedProduct !== undefined}
               />
             </>
