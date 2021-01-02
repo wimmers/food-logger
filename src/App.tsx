@@ -225,14 +225,17 @@ function App() {
               selectedMarkets={selectedMarkets}
               setMap={(map: Map) => mapRef.current = map}
             />
-            {selectedProduct ?
-              <ProductDetail
-                onBack={() => setSelectedProduct(undefined)}
-                onConfirm={onConfirmProduct}
-                onUnconfirm={onUnconfirmProduct}
-                product={products[selectedProduct]}
-                showConfirm={supermarkets !== null && supermarkets.length === 1}
-              /> :
+            <>
+              {selectedProduct ?
+                <ProductDetail
+                  onBack={() => setSelectedProduct(undefined)}
+                  onConfirm={onConfirmProduct}
+                  onUnconfirm={onUnconfirmProduct}
+                  product={products[selectedProduct]}
+                  showConfirm={supermarkets !== null && supermarkets.length === 1}
+
+                /> : null
+              }
               <ProductList
                 products={filteredProducts}
                 categories={filteredCategories}
@@ -243,7 +246,9 @@ function App() {
                 onChangeSearchState={onChangeSearchState}
                 tagging={tagging}
                 onTag={onTagProduct}
-              />}
+                visible={selectedProduct !== undefined}
+              />
+            </>
           </Split>
         </Container >
       </>

@@ -74,7 +74,8 @@ type ProductListProps = {
     searchInputState: string[];
     onChangeSearchState: (values: string[], state: SearchState) => void;
     tagging: boolean,
-    onTag: (index: number) => void
+    onTag: (index: number) => void,
+    visible: boolean
 };
 
 // Adopted from https://react-bootstrap.github.io/components/accordion/
@@ -104,7 +105,8 @@ function ProductList(
         searchInputState,
         onChangeSearchState,
         tagging,
-        onTag
+        onTag,
+        visible
     }: ProductListProps
 ) {
 
@@ -177,7 +179,7 @@ function ProductList(
     )
 
     return (
-        <>
+        <div style={visible ? {display: 'none'} : undefined}>
             <ProductSearch
                 defaultValue={{
                     brands: Object.keys(brands),
@@ -201,7 +203,7 @@ function ProductList(
                 </Button> :
                 null
             }
-        </>
+        </div>
     )
 }
 
