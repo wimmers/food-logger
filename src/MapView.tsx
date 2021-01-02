@@ -210,12 +210,14 @@ function MapView({
                                 </Card.Title>
                                 {data.brand ? (<Card.Text>{`${tt('Brand')}: ${data.brand}`}</Card.Text>) : null}
                                 {data["addr:street"] !== undefined ? (<Card.Text>{address} </Card.Text>) : null}
-                                <Button variant="outline-primary" onClick={_ => onFindProducts(market)}>
+                                <Button
+                                    variant="outline-primary"
+                                    onClick={_ => tagging ? onStopTagging() : onFindProducts(market)}>
                                     {t('Find products')}
                                 </Button>
                                 <Button
                                     variant="outline-secondary"
-                                    onClick={tagging ? _ => onStopTagging() : _ => onStartTagging(market)}
+                                    onClick={_ => tagging ? onStopTagging() : onStartTagging(market)}
                                     className="mt-2"
                                     style={{ display: "block" }}
                                 >
