@@ -91,15 +91,17 @@ function App() {
     else {
       if (!tagging) {
         enqueueSnackbar(taggingSnackBar)
+        toggleTagging();
       }
-      toggleTagging();
+      else {
+        onStopTagging()
+      }
     }
     if (isMenu)
       toggleMenuVisible();
   }
 
   async function filterProductsByMarkets(markets: OSMSupermarket[]) {
-    const ids = Object.keys(products)
     const nodeIds = markets.map(market => market.id).join()
     const result = await fetch(filterProductsUrl + new URLSearchParams({
       nodes: nodeIds
@@ -123,6 +125,16 @@ function App() {
       toggleTagging()
       enqueueSnackbar(taggingSnackBar)
     }
+    // Should never be reached
+  }
+
+  const onStopTagging = () => {
+    if (tagging) {
+      if (supermarkets)
+        filterProductsByMarkets(supermarkets)
+      toggleTagging()
+    }
+    // Should never be reached
   }
 
   const updateSelected = (id: number) => {
@@ -227,7 +239,7 @@ function App() {
             <MapView
               onUpdateMarkets={updateMarkets}
               onStartTagging={onStartTagging}
-              onStopTagging={onTagProducts(false)}
+              onStopTagging={onStopTagging}
               tagging={tagging}
               onOpenMenu={() => toggleMenuVisible()}
               supermarkets={supermarkets}
