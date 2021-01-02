@@ -17,14 +17,14 @@ type ProductCardProps = {
     product: product;
     onClick: () => void;
     available: boolean;
+    tagged: boolean;
     tagging: boolean;
     onTag: () => void;
 };
 
 function ProductCard(
-    { product, onClick, available, tagging, onTag }: ProductCardProps
+    { product, onClick, available, tagged, tagging, onTag }: ProductCardProps
 ) {
-    const [tagged, toggleTagged] = useToggle(false)
 
     return (
         <Card
@@ -43,7 +43,6 @@ function ProductCard(
                             onClick={e => {
                                 e.stopPropagation()
                                 if (!tagged) {
-                                    toggleTagged()
                                     onTag()
                                 }
                             }}
@@ -112,12 +111,21 @@ function ProductList(
 
     const [numCategories, setNumCategories] = useState(initNumCategories)
     const [numProducts, setNumProducts] = useState(initNumProducts)
+    const [taggedProducts, setTaggedProducts] = useState(new Set())
 
     const onLoadMoreCategories = () => setNumCategories(x => x + incNumCategories)
     const onLoadMoreProducts = () => setNumProducts(x => x + incNumProducts)
     const onAccordionChange = (isOpen: boolean) => setNumProducts(initNumProducts)
 
     const t = useTranslation('products').t
+
+    const tagProduct = (id: number) => {
+        taggedProducts.add(id)
+        // This is to force an update in react.
+        // An immutable data structure would be probably be more apt.
+        setTaggedProducts(new Set(taggedProducts))
+        onTag(id)
+    }
 
     const productList = (ids: number[]) => {
         return ids.map((id) => {
@@ -131,9 +139,10 @@ function ProductList(
                     product={products[id]}
                     onClick={() => { onSelectProduct(id) }}
                     available={available}
+                    tagged={taggedProducts.has(id)}
                     key={id}
                     tagging={tagging}
-                    onTag={() => onTag(id)}
+                    onTag={() => tagProduct(id)}
                 />
             )
         })
@@ -179,7 +188,7 @@ function ProductList(
     )
 
     return (
-        <div style={visible ? {display: 'none'} : undefined}>
+        <div style={visible ? { display: 'none' } : undefined}>
             <ProductSearch
                 defaultValue={{
                     brands: Object.keys(brands),
