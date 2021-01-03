@@ -207,72 +207,86 @@ function App() {
       enqueueSnackbar(tt("Click anywhere on the map to find shops!"), { autoHideDuration: 50000 })
   }, [loadingI18N])
 
+  const loadingView = <div style={{ margin: 'auto', display: 'table' }} className="my-3">
+    <Spinner
+      as="span"
+      animation="border"
+      size="sm"
+      role="status"
+      aria-hidden="true"
+      className="mr-2"
+    />
+    {loadingI18N ? 'Loading...' : tt('Loading...')}
+  </div >
+
+  const productView =
+    <>
+      {selectedProduct ?
+        <ProductDetail
+          onBack={() => setSelectedProduct(undefined)}
+          onConfirm={onConfirmProduct}
+          onUnconfirm={onUnconfirmProduct}
+          product={products[selectedProduct]}
+          showConfirm={supermarkets !== null && supermarkets.length === 1}
+
+        /> : null
+      }
+      <ProductList
+        products={filteredProducts}
+        categories={filteredCategories}
+        brands={data.brands}
+        availableProductIds={new Set(availableProductIds)}
+        onSelectProduct={updateSelected}
+        searchInputState={searchInputState}
+        onChangeSearchState={onChangeSearchState}
+        tagging={tagging}
+        onTag={onTagProduct}
+        onUntag={onUntagProduct}
+        visible={selectedProduct !== undefined}
+      />
+    </>
+
+  const mapView =
+    <MapView
+      onUpdateMarkets={updateMarkets}
+      onStartTagging={onStartTagging}
+      onStopTagging={onStopTagging}
+      tagging={tagging}
+      onOpenMenu={() => toggleMenuVisible()}
+      supermarkets={supermarkets}
+      selectedMarkets={selectedMarkets}
+      setMap={(map: Map) => mapRef.current = map}
+    />
+
+  const mainView =
+    <Container fluid style={{ height: vh }}>
+      <Split
+        onDrag={onDrag}
+        direction={horizontal ? 'horizontal' : 'vertical'}
+        gutterSize={20}
+        totalSize={horizontal ? vw : vh}
+        minSize={0}
+        collapsed={supermarkets !== null && supermarkets.length === 1}
+      >
+        {mapView}
+        {productView}
+      </Split>
+    </Container>
+
+  const menuView =
+    <Menu
+      open={menuVisible}
+      onClose={toggleMenuVisible}
+      onTagProducts={onTagProducts(true)}
+      tagging={tagging}
+    />
+
   return (
     loadingData || loadingI18N ?
-      <div style={{ margin: 'auto', display: 'table' }} className="my-3">
-        <Spinner
-          as="span"
-          animation="border"
-          size="sm"
-          role="status"
-          aria-hidden="true"
-          className="mr-2"
-        />
-        {loadingI18N ? 'Loading...' : tt('Loading...')}
-      </div > :
+      loadingView :
       <>
-        <Menu
-          open={menuVisible}
-          onClose={toggleMenuVisible}
-          onTagProducts={onTagProducts(true)}
-          tagging={tagging}
-        />
-        <Container fluid style={{ height: vh }}>
-          <Split
-            onDrag={onDrag}
-            direction={horizontal ? 'horizontal' : 'vertical'}
-            gutterSize={20}
-            totalSize={horizontal ? vw : vh}
-            minSize={0}
-            collapsed={supermarkets !== null && supermarkets.length === 1}
-          >
-            <MapView
-              onUpdateMarkets={updateMarkets}
-              onStartTagging={onStartTagging}
-              onStopTagging={onStopTagging}
-              tagging={tagging}
-              onOpenMenu={() => toggleMenuVisible()}
-              supermarkets={supermarkets}
-              selectedMarkets={selectedMarkets}
-              setMap={(map: Map) => mapRef.current = map}
-            />
-            <>
-              {selectedProduct ?
-                <ProductDetail
-                  onBack={() => setSelectedProduct(undefined)}
-                  onConfirm={onConfirmProduct}
-                  onUnconfirm={onUnconfirmProduct}
-                  product={products[selectedProduct]}
-                  showConfirm={supermarkets !== null && supermarkets.length === 1}
-
-                /> : null
-              }
-              <ProductList
-                products={filteredProducts}
-                categories={filteredCategories}
-                brands={data.brands}
-                availableProductIds={new Set(availableProductIds)}
-                onSelectProduct={updateSelected}
-                searchInputState={searchInputState}
-                onChangeSearchState={onChangeSearchState}
-                tagging={tagging}
-                onTag={onTagProduct}
-                onUntag={onUntagProduct}
-                visible={selectedProduct !== undefined}
-              />
-            </>
-          </Split>
-        </Container >
+        {menuView}
+        {mainView}
       </>
   );
 }
