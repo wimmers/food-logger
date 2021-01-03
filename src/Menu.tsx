@@ -23,9 +23,18 @@ function makeListItems(elements: MenuElement[]) {
     ))
 }
 
-function Menu({ open, onClose, onTagProducts, tagging }: {
+function Menu({
+    open,
+    onClose,
+    onAbout,
+    onFAQ,
+    onTagProducts,
+    tagging
+}: {
     open: boolean,
     onClose: () => void,
+    onAbout: () => void,
+    onFAQ: () => void,
     onTagProducts: () => void,
     tagging: boolean
 }) {
@@ -34,7 +43,7 @@ function Menu({ open, onClose, onTagProducts, tagging }: {
     const tt = useTranslation('common').t
 
     const mainElements: MenuElement[] = [
-        [   
+        [
             tagging ? tt("Stop tagging") : tt("Tag products"),
             <CheckIcon />,
             onTagProducts
@@ -43,8 +52,8 @@ function Menu({ open, onClose, onTagProducts, tagging }: {
     ]
 
     const infoElements: MenuElement[] = [
-        [t("FAQ"), < HelpIcon />, () => { }],
-        [t("About"), <InfoIcon />, () => { }]
+        [t("FAQ"), < HelpIcon />, onFAQ],
+        [t("About"), <InfoIcon />, onAbout]
     ]
 
     const list = () => (

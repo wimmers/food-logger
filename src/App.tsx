@@ -22,6 +22,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Spinner from 'react-bootstrap/Spinner';
 import { useI18N } from './i18n';
 import { useTranslation } from 'react-i18next';
+import InfoView, { AccordionView } from './InfoView';
+
+type currentView = 'main' | 'about' | 'faq'
 
 function App() {
 
@@ -34,11 +37,22 @@ function App() {
   const [searchState, setSearchState] = useState<SearchState>(emptySearchState)
   const [tagging, toggleTagging] = useToggle(false)
   const [availableProductIds, setAvailableProductIds] = useState<number[]>([])
+  const [currentView, setCurrentView] = useState<currentView>('main')
 
   const setData = (data: products_categories) => {
     setProducts(data.products)
     setAvailableProductIds(Object.keys(data.products).map(x => +x))
   }
+
+  const onOpenAbout = () => {
+    setCurrentView('about')
+    toggleMenuVisible()
+  }
+  const onOpenFAQ = () => {
+    setCurrentView('faq')
+    toggleMenuVisible()
+  }
+  const onOpenMainView = () => setCurrentView('main')
 
   const onChangeSearchState = (values: string[], state: SearchState) => {
     setSearchInputState(values)
@@ -278,15 +292,49 @@ function App() {
       open={menuVisible}
       onClose={toggleMenuVisible}
       onTagProducts={onTagProducts(true)}
+      onAbout={onOpenAbout}
+      onFAQ={onOpenFAQ}
       tagging={tagging}
     />
+
+
+  const aboutParts = ['general', 'contact', 'imprint', 'privacy']
+  const tAbout = useTranslation('about', { useSuspense: false }).t
+  const aboutItems: [string, string][] =
+    aboutParts.map(item => [tAbout(`#${item}-caption`), tAbout(`#${item}-text`)])
+
+  const aboutView =
+    <InfoView
+      title={tAbout('About')}
+      onClose={onOpenMainView}
+    >
+      <AccordionView items={aboutItems} />
+    </InfoView>
+
+  const faqParts =
+    ['MissingProduct', 'MissingShop', 'GetInvolved', 'TagProducts', 'BugReport', 'AppQuestion']
+  const tFAQ = useTranslation('faq', { useSuspense: false }).t
+  const faqItems: [string, string][] =
+    faqParts.map(item => [tFAQ(`#${item}-caption`), tFAQ(`#${item}-text`)])
+
+  const faqView =
+    <InfoView
+      title={tFAQ('Frequently Asked Questions')}
+      onClose={onOpenMainView}
+    >
+      <AccordionView items={faqItems} />
+    </InfoView>
 
   return (
     loadingData || loadingI18N ?
       loadingView :
       <>
         {menuView}
-        {mainView}
+        {
+          (currentView === 'main' && mainView) ||
+          (currentView === 'about' && aboutView) ||
+          (currentView === 'faq' && faqView)
+        }
       </>
   );
 }
